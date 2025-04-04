@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XForms", "XForms.csproj", "{8D3DAC41-99C2-C1B7-ADF1-0E978019E869}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8D3DAC41-99C2-C1B7-ADF1-0E978019E869}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D3DAC41-99C2-C1B7-ADF1-0E978019E869}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D3DAC41-99C2-C1B7-ADF1-0E978019E869}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D3DAC41-99C2-C1B7-ADF1-0E978019E869}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {31165EC7-3EA7-4A67-8A20-29814742F908}
+	EndGlobalSection
+EndGlobal
