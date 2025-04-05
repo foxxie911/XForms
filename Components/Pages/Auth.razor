@@ -1,6 +1,11 @@
 ﻿@page "/auth"
 
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@using XForms.Data
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<ApplicationUser> UserManager
 
 @attribute [Authorize]
 
@@ -10,5 +15,21 @@
 <MudText Typo="Typo.h3" GutterBottom="true">You are authenticated!</MudText>
 
 <AuthorizeView>
-    <MudText Class="mb-4">Hello @context.User.Identity?.Name!</MudText>
+    <MudText Class="mb-4">Hello @_displayName</MudText>
 </AuthorizeView>
+
+@code
+{
+    private string _displayName = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = await UserManager.GetUserAsync(authState.User);
+        
+        if (user != null)
+        {
+            _displayName = user.DisplayName;
+        }
+    }
+}

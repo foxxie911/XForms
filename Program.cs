@@ -1,3 +1,4 @@
+using CloudinaryDotNet;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -7,37 +8,46 @@ using XForms.Components.Account;
 using XForms.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+{
+    builder.Services.AddMudServices();
+    builder.Services.AddRazorComponents()
+        .AddInteractiveServerComponents();
 
-// Add MudBlazor services
-builder.Services.AddMudServices();
+    builder.Services.AddCascadingAuthenticationState();
+    builder.Services.AddScoped<IdentityUserAccessor>();
+    builder.Services.AddScoped<IdentityRedirectManager>();
+    builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 
-// Add services to the container.
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+    builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultScheme = IdentityConstants.ApplicationScheme;
+            options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+        })
+        .AddIdentityCookies();
 
-builder.Services.AddCascadingAuthenticationState();
-builder.Services.AddScoped<IdentityUserAccessor>();
-builder.Services.AddScoped<IdentityRedirectManager>();
-builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
+                           throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseNpgsql(connectionString));
+    builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultScheme = IdentityConstants.ApplicationScheme;
-        options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-    })
-    .AddIdentityCookies();
+    builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        .AddEntityFrameworkStores<ApplicationDbContext>()
+        .AddSignInManager()
+        .AddDefaultTokenProviders();
+    builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddSignInManager()
-    .AddDefaultTokenProviders();
-
-builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+    var cloudinaryConfiguration = builder.Configuration.GetSection("Cloudinary");
+    var account = new Account
+    (
+        cloudinaryConfiguration["CloudName"],
+        cloudinaryConfiguration["ApiKey"],
+        cloudinaryConfiguration["ApiSecret"]
+    );
+    var cloudinary = new Cloudinary(account);
+    cloudinary.Api.Secure = true;
+    builder.Services.AddSingleton(cloudinary);
+}
 
 var app = builder.Build();
 
@@ -59,10 +69,11 @@ app.UseHttpsRedirection();
 app.UseAntiforgery();
 
 app.MapStaticAssets();
+
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
-
 // Add additional endpoints required by the Identity /Account Razor components.
+
 app.MapAdditionalIdentityEndpoints();
 
 app.Run();

@@ -5,6 +5,7 @@
 @using System.Text.Encodings.Web
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
+@using XForms.Components.Account
 @using XForms.Data
 
 @inject UserManager<ApplicationUser> UserManager
@@ -29,10 +30,16 @@
 
             <MudGrid>
                 <MudItem md="12">
+                    <MudStaticTextField For="@(() => Input.DisplayName)" @bind-Value="Input.DisplayName"
+                                        Label="Display Name" Placeholder="John Doe"
+                                        UserAttributes="@(new() { { "autocomplete", "username" }, { "aria-required", "true" } } )"/>
+                </MudItem>
+                <MudItem md="12">
                     <MudStaticTextField For="@(() => Input.Email)" @bind-Value="Input.Email"
                                         Label="Email" Placeholder="name@example.com"
                                         UserAttributes="@(new() { { "autocomplete", "username" }, { "aria-required", "true" } } )" />
                 </MudItem>
+                
                 <MudItem md="12">
                     <MudStaticTextField For="@(() => Input.Password)" @bind-Value="Input.Password"
                                         Label="Password" InputType="InputType.Password" Placeholder="password"
@@ -56,7 +63,7 @@
 </MudGrid>
 
 @code {
-    private IEnumerable<IdentityError>? identityErrors;
+    private IEnumerable<IdentityError>? _identityErrors;
 
     [SupplyParameterFromForm]
     private InputModel Input { get; set; } = new();
@@ -64,20 +71,23 @@
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
 
-    private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
+    private string? Message => _identityErrors is null ? null : $"Error: {string.Join(", ", _identityErrors.Select(error => error.Description))}";
 
     public async Task RegisterUser(EditContext editContext)
     {
         var user = CreateUser();
 
+        user.DisplayName = Input.DisplayName;
+
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
         var emailStore = GetEmailStore();
         await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+        
         var result = await UserManager.CreateAsync(user, Input.Password);
 
         if (!result.Succeeded)
         {
-            identityErrors = result.Errors;
+            _identityErrors = result.Errors;
             return;
         }
 
@@ -128,10 +138,21 @@
     private sealed class InputModel
     {
         [Required]
+        [Display(Name = "Display Name")]
+        [MaxLength(100, ErrorMessage = "Not more than 100 Characters")]
+        // [AllowedValues(/**/, ErrorMessage = "You can only use a-z and A-Z")]
+        public string DisplayName { get; set; } = string.Empty;
+        
+        [Required]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; } = "";
 
+        /*
+        [DataType(DataType.ImageUrl)]
+        public string? AvatarUrl { get; set; }
+        */
+        
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]

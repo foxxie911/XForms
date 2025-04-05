@@ -7,7 +7,9 @@ namespace XForms.Data;
 public class ApplicationUser : IdentityUser
 {
     [Required]
-    [StringLength(50, ErrorMessage = "Your display name must be lower than 50 characters")]
-    public required string DisplayName {get; set;}
+    [MaxLength(100, ErrorMessage = "User name cannot be longer than 100 characters.")]
+    public required string DisplayName { get; set; }
+    [DataType(DataType.ImageUrl)]
+    public string? AvatarUrl { get; set; }
 }
 

@@ -4,17 +4,26 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-XForms-a3b48ae0-a6df-4c70-b6d5-bf6df20e7566</UserSecretsId>
+    <UserSecretsId>aspnet-XForms-929f5ff9-26d6-42f7-9905-b2977194df97</UserSecretsId>
   </PropertyGroup>
 
 
   <ItemGroup>
+    <PackageReference Include="CloudinaryDotNet" Version="1.27.5" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.*" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.*" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.*" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.*" />
     <PackageReference Include="MudBlazor" Version="8.*" />
     <PackageReference Include="Extensions.MudBlazor.StaticInput" Version="3.*" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Content Update="Components\Account\Pages\RegisterConfirmation.razor">
+      <DependentUpon>LoginWith2fa.razor</DependentUpon>
+    </Content>
   </ItemGroup>
 
 </Project>

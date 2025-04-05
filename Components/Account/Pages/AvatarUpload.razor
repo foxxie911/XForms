@@ -1,0 +1,92 @@
+﻿@page "/upload-avatar"
+@using CloudinaryDotNet
+@using CloudinaryDotNet.Actions
+@using Size = MudBlazor.Size
+
+@inject Cloudinary Cloudinary
+@inject ISnackbar Snackbar
+
+@if (_imageUrl is not null)
+{
+    <MudAvatar Size="Size.Large">
+        <MudImage Src="@_imageUrl" Alt="User Avatar"></MudImage>
+    </MudAvatar>
+}
+else
+{
+    <MudAvatar Size="Size.Large" Class="mb-4">No Image</MudAvatar>
+}
+
+<MudFileUpload T="IBrowserFile" FilesChanged="UploadAvatar">
+    <ActivatorContent>
+        <MudFab
+            Color="Color.Tertiary" 
+            StartIcon="@Icons.Material.Filled.Image"
+            Label="Upload Avatar" />
+    </ActivatorContent>
+</MudFileUpload>
+
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <MudText Color="Color.Error" Class="mt-2">@_errorMessage</MudText>
+}
+
+@code {
+    private string? _imageUrl;
+    private string? _errorMessage;
+
+    private const long MaxFileSize = 1 * 1024 * 1024;
+
+    [Parameter]
+    public string? AvatarUrl { get; set; }
+
+    [Parameter]
+    public EventCallback<string?> AvatarUrlChanged { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        _imageUrl = AvatarUrl;
+    }
+
+    private async Task UploadAvatar(IBrowserFile file)
+    {
+        _errorMessage = null;
+
+        var avatarFile = file;
+        
+        if (avatarFile.Size > MaxFileSize)
+        {
+            _errorMessage = "File too large (max 1MB).";
+            return;
+        }
+
+        try
+        {
+            var uploadParams = new ImageUploadParams()
+            {
+                File = new FileDescription(avatarFile.Name, avatarFile.OpenReadStream(maxAllowedSize: MaxFileSize)),
+                PublicId = $"avatars/{Guid.NewGuid()}",
+                Transformation = new Transformation()
+                    .Width(250)
+                    .Height(250)
+                    .Crop("fill")
+            };
+            var uploadResult = await Cloudinary.UploadAsync(uploadParams);
+            if (uploadResult.Error != null)
+            {
+                _errorMessage = uploadResult.Error.Message;
+                return;
+            }
+
+            _imageUrl = uploadResult.SecureUrl.ToString();
+            await AvatarUrlChanged.InvokeAsync(_imageUrl);
+            Snackbar.Add("Avatar uploaded successfully!", Severity.Success);
+            Console.WriteLine(_imageUrl);
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = "Upload failed: " + ex.Message;
+            Snackbar.Add("Upload failed!", Severity.Error);
+        }
+    }
+}
