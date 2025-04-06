@@ -77,6 +77,7 @@ var app = builder.Build();
     {
         var services = scope.ServiceProvider;
         await AdminSeeder.SeedAdminUserAsync(services);
+        await UserSeeder.SeedUserAsync(services);
     }
 
     app.UseHttpsRedirection();
