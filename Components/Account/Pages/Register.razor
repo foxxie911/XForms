@@ -37,7 +37,11 @@
                 <MudItem md="12">
                     <MudStaticTextField For="@(() => Input.Email)" @bind-Value="Input.Email"
                                         Label="Email" Placeholder="name@example.com"
-                                        UserAttributes="@(new() { { "autocomplete", "username" }, { "aria-required", "true" } } )" />
+                                        UserAttributes="@(new() { { "autocomplete", "email" }, { "aria-required", "true" } } )" />
+                </MudItem>
+                
+                <MudItem md="12">
+                    <AvatarUpload @bind-AvatarUrl="Input.AvatarUrl"/>
                 </MudItem>
                 
                 <MudItem md="12">
@@ -72,12 +76,13 @@
     private string? ReturnUrl { get; set; }
 
     private string? Message => _identityErrors is null ? null : $"Error: {string.Join(", ", _identityErrors.Select(error => error.Description))}";
-
+    
     public async Task RegisterUser(EditContext editContext)
     {
         var user = CreateUser();
 
         user.DisplayName = Input.DisplayName;
+        user.AvatarUrl = Input.AvatarUrl;
 
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
         var emailStore = GetEmailStore();
@@ -148,10 +153,8 @@
         [Display(Name = "Email")]
         public string Email { get; set; } = "";
 
-        /*
         [DataType(DataType.ImageUrl)]
         public string? AvatarUrl { get; set; }
-        */
         
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]

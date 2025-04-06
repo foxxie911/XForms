@@ -1,8 +1,10 @@
 ﻿@page "/auth"
 
+@using CloudinaryDotNet.Actions
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Identity
 @using XForms.Data
+@using Size = MudBlazor.Size
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject UserManager<ApplicationUser> UserManager
@@ -14,14 +16,30 @@
 
 <MudText Typo="Typo.h3" GutterBottom="true">You are authenticated!</MudText>
 
-<AuthorizeView>
-    <MudText Class="mb-4">Hello @_displayName</MudText>
-</AuthorizeView>
+<MudText Typo="Typo.body2"  GutterBottom="true"></MudText>
+
+<div class="d-flex gap-4 align-center">
+    @if (_avatarUrl is not null)
+    {
+        <MudAvatar Size="Size.Medium">
+            <MudImage Src="@_avatarUrl"></MudImage>
+        </MudAvatar>
+    }
+    else
+    {
+        <MudAvatar Size="Size.Medium">
+            <MudIcon Color="Color.Default" Icon="@Icons.Material.Filled.Person"/>
+        </MudAvatar>
+    }
+    <MudText>Hello @_displayName</MudText>
+</div>
 
 @code
 {
     private string _displayName = string.Empty;
-
+    private string _userRole = string.Empty;
+    private string? _avatarUrl;
+    
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -30,6 +48,7 @@
         if (user != null)
         {
             _displayName = user.DisplayName;
+            _avatarUrl = user.AvatarUrl;
         }
     }
 }
