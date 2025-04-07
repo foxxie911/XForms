@@ -36,10 +36,6 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<ApplicationDbContext>()
-        /*
-        .AddRoleManager<RoleManager<IdentityRole>>()
-        .AddRoleStore<RoleStore<IdentityRole, ApplicationDbContext>>()
-        */
         .AddSignInManager()
         .AddDefaultTokenProviders();
     builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
@@ -54,14 +50,13 @@ var builder = WebApplication.CreateBuilder(args);
     var cloudinary = new Cloudinary(account);
     cloudinary.Api.Secure = true;
     builder.Services.AddSingleton(cloudinary);
-
+    
     builder.Services.AddRazorPages();
     builder.Services.AddServerSideBlazor();
 }
 
 var app = builder.Build();
 {
-// Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
         app.UseMigrationsEndPoint();
@@ -69,7 +64,6 @@ var app = builder.Build();
     else
     {
         app.UseExceptionHandler("/Error", createScopeForErrors: true);
-        // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
         app.UseHsts();
     }
 
@@ -81,17 +75,11 @@ var app = builder.Build();
     }
 
     app.UseHttpsRedirection();
-
-
     app.UseAntiforgery();
-
     app.MapStaticAssets();
-
     app.MapRazorComponents<App>()
         .AddInteractiveServerRenderMode();
 // Add additional endpoints required by the Identity /Account Razor components.
-
     app.MapAdditionalIdentityEndpoints();
-
     app.Run();
 }
