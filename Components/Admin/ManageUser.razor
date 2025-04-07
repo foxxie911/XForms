@@ -1,0 +1,121 @@
+@page "/Admin/ManageUser"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using XForms.Data
+
+@inject UserManager<ApplicationUser> UserManager
+@inject ISnackbar Snackbar
+
+@attribute [Authorize(Roles = "Admin")]
+
+<MudButtonGroup Class="py-5" Variant="Variant.Outlined" Color="Color.Primary" OverrideStyles="false">
+   <MudIconButton
+      Icon="@Icons.Material.Filled.Delete"
+      Color="Color.Error"
+      Size="Size.Medium"
+      Variant="Variant.Outlined"
+      OnClick="@DeleteSelectedUser"/>
+</MudButtonGroup>
+
+<MudDataGrid
+   T="ApplicationUser"
+   MultiSelection="true"
+   QuickFilter="@QuickFilter"
+   Items="@_users"
+   SortMode="SortMode.Multiple"
+   SelectedItemsChanged="@OnSelectedItemsChanged">
+
+   <ToolBarContent>
+      <MudText Typo="Typo.h6">User List</MudText>
+      <MudSpacer/>
+      <MudTextField
+         @bind-Value="_searchString"
+         Placeholder="Search"
+         Adornment="Adornment.Start"
+         Immediate="true"
+         AdornmentIcon="@Icons.Material.Filled.Search"
+         IconSize="Size.Medium"
+         Class="mt-0"/>
+   </ToolBarContent>
+   <Columns>
+      <SelectColumn T="ApplicationUser"/>
+      <PropertyColumn Property="u => u.DisplayName" Comparer="new MudBlazor.Utilities.NaturalComparer()"/>
+      <PropertyColumn Property="u => u.Email"/>
+   </Columns>
+   <PagerContent>
+      <MudDataGridPager T="ApplicationUser"/>
+   </PagerContent>
+</MudDataGrid>
+
+@code {
+   private IEnumerable<ApplicationUser>? _users = new List<ApplicationUser>();
+   private HashSet<ApplicationUser> _selectedUsers = [];
+   private string? _searchString;
+
+   protected override async Task OnInitializedAsync()
+   {
+      await base.OnInitializedAsync();
+      await LoadUsersAsync();
+   }
+
+   private async Task LoadUsersAsync()
+   {
+      _users = await UserManager.Users.ToListAsync();
+   }
+
+   private void OnSelectedItemsChanged(HashSet<ApplicationUser> users)
+   {
+      _selectedUsers = users;
+      StateHasChanged();
+   }
+
+   private Func<ApplicationUser, bool> QuickFilter => u =>
+   {
+      if (string.IsNullOrWhiteSpace(_searchString)) return true;
+      if (u.DisplayName.Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
+      if (u.Email.Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
+      return false;
+   };
+
+   private async Task DeleteSelectedUser()
+   {
+      try
+      {
+         var successCount = 0;
+         List<ApplicationUser> failedUsers = [];
+
+         foreach (var user in _selectedUsers)
+         {
+            var result = await UserManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {
+               successCount++;
+            }
+            else
+            {
+               failedUsers.Add(user);
+            }
+         }
+
+         if (failedUsers.Count > 0)
+         {
+            Snackbar.Add($"Successfully deleted {successCount} users. Delete failed for {failedUsers.Count} users", Severity.Error);
+         }
+         else
+         {
+            Snackbar.Add($"Successfully deleted {successCount} users", Severity.Success);
+         }
+      }
+      catch (Exception e)
+      {
+         Snackbar.Add($"Error deleting users: {e.Message}", Severity.Error);
+      }
+      finally
+      {
+         await LoadUsersAsync();
+         _selectedUsers.Clear();
+      }
+   }
+
+}
