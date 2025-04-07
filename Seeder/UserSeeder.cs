@@ -23,7 +23,7 @@ public class UserSeeder
          {
             DisplayName = $"User{i}",
             Email = $"user{i}@gmail.com",
-            UserName = $"user_{i}"
+            UserName = $"user{i}@gmail.com"
          };
 
          await userManager.CreateAsync(user, "U$er123");
