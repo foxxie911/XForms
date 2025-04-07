@@ -49,7 +49,7 @@
 </MudDataGrid>
 
 @code {
-   private IEnumerable<ApplicationUser>? _users = new List<ApplicationUser>();
+   private IEnumerable<ApplicationUser> _users = new List<ApplicationUser>();
    private HashSet<ApplicationUser> _selectedUsers = [];
    private string? _searchString;
 
@@ -83,26 +83,20 @@
       try
       {
          var successCount = 0;
-         List<ApplicationUser> failedUsers = [];
+         var failureCount = 0;
 
          foreach (var user in _selectedUsers)
          {
             var result = await UserManager.DeleteAsync(user);
-            if (result.Succeeded)
-            {
-               successCount++;
-            }
-            else
-            {
-               failedUsers.Add(user);
-            }
+            if (!result.Succeeded) failureCount++;
+            successCount++;
          }
 
-         if (failedUsers.Count > 0)
+         if (failureCount > 0)
          {
-            Snackbar.Add($"Successfully deleted {successCount} users. Delete failed for {failedUsers.Count} users", Severity.Error);
+            Snackbar.Add($"Delete failed for {failureCount} users", Severity.Error);
          }
-         else
+         if (successCount > 0)
          {
             Snackbar.Add($"Successfully deleted {successCount} users", Severity.Success);
          }
