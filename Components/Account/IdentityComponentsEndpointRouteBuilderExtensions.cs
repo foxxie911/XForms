@@ -10,7 +10,7 @@ using XForms.Components.Account.Pages;
 using XForms.Components.Account.Pages.Manage;
 using XForms.Data;
 
-namespace Microsoft.AspNetCore.Routing;
+namespace XForms.Components.Account;
 
 internal static class IdentityComponentsEndpointRouteBuilderExtensions
 {

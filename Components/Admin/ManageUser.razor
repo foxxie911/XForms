@@ -1,115 +1,118 @@
 @page "/Admin/ManageUser"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Identity
-@using Microsoft.EntityFrameworkCore
 @using XForms.Data
+@using XForms.Data.Dtos
 
 @inject UserManager<ApplicationUser> UserManager
 @inject ISnackbar Snackbar
 
 @attribute [Authorize(Roles = "Admin")]
 
-<MudButtonGroup Class="py-5" Variant="Variant.Outlined" Color="Color.Primary" OverrideStyles="false">
-   <MudIconButton
-      Icon="@Icons.Material.Filled.Delete"
-      Color="Color.Error"
-      Size="Size.Medium"
-      Variant="Variant.Outlined"
-      OnClick="@DeleteSelectedUser"/>
-</MudButtonGroup>
-
 <MudDataGrid
-   T="ApplicationUser"
+   T="AdminUserManageDto"
    MultiSelection="true"
-   QuickFilter="@QuickFilter"
-   Items="@_users"
-   SortMode="SortMode.Multiple"
+   Hover="true"
+   Striped="true"
+   Filterable="false"
+   ServerData="LoadUsersAsync"
+   Dense="true"
+   @ref="_dataGrid"
    SelectedItemsChanged="@OnSelectedItemsChanged">
 
    <ToolBarContent>
       <MudText Typo="Typo.h6">User List</MudText>
       <MudSpacer/>
       <MudTextField
-         @bind-Value="_searchString"
+         @bind-Value="@_gridDataDto!.SearchText"
          Placeholder="Search"
-         Adornment="Adornment.Start"
+         Variant="Variant.Text"
+         Adornment="Adornment.End"
          Immediate="true"
+         OnAdornmentClick="_dataGrid!.ReloadServerData"
          AdornmentIcon="@Icons.Material.Filled.Search"
          IconSize="Size.Medium"
-         Class="mt-0"/>
+         Class="mt-1"/>
+      <MudSpacer/>
+      <MudButtonGroup Variant="Variant.Outlined" Color="Color.Primary" OverrideStyles="false">
+         <MudTooltip Text="Delete">
+            <MudIconButton
+               Icon="@Icons.Material.Filled.Delete"
+               Color="Color.Error"
+               Size="Size.Medium"
+               Variant="Variant.Outlined"
+               OnClick="@ToggleDeleteDialog"/>
+         </MudTooltip>
+         <MudTooltip Text="Block/Unblock">
+            <MudIconButton
+               Icon="@Icons.Material.Filled.Block"
+               Color="Color.Primary"
+               Variant="Variant.Outlined"
+               Size="Size.Medium"
+               OnClick="@ToggleBlockDialog"/>
+         </MudTooltip>
+         <MudButton>
+
+         </MudButton>
+      </MudButtonGroup>
    </ToolBarContent>
    <Columns>
-      <SelectColumn T="ApplicationUser"/>
-      <PropertyColumn Property="u => u.DisplayName" Comparer="new MudBlazor.Utilities.NaturalComparer()"/>
-      <PropertyColumn Property="u => u.Email"/>
+      <SelectColumn T="AdminUserManageDto"/>
+      <PropertyColumn Sortable="true" Property="u => u.DisplayName"
+                      Comparer="new MudBlazor.Utilities.NaturalComparer()"/>
+      <PropertyColumn Sortable="true" Property="u => u.Email"/>
+      <TemplateColumn Title="Roles">
+         <CellTemplate>
+            @if (context.Item.Roles == string.Empty)
+            {
+               <MudText>N/A</MudText>
+            }
+            else
+            {
+               <MudText>@context.Item.Roles</MudText>
+            }
+         </CellTemplate>
+      </TemplateColumn>
+      <TemplateColumn Title="Block Status">
+         <CellTemplate>
+            @if (context.Item.IsBlocked)
+            {
+               <MudChip Color="Color.Error" Size="Size.Small" Icon="@Icons.Material.Filled.Lock">Blocked</MudChip>
+            }
+            else
+            {
+               <MudChip Color="Color.Success" Size="Size.Small" Icon="@Icons.Material.Filled.LockOpen">Not Blocked
+               </MudChip>
+            }
+         </CellTemplate>
+      </TemplateColumn>
    </Columns>
    <PagerContent>
-      <MudDataGridPager T="ApplicationUser"/>
+      <MudDataGridPager T="AdminUserManageDto"/>
    </PagerContent>
 </MudDataGrid>
 
-@code {
-   private IEnumerable<ApplicationUser> _users = new List<ApplicationUser>();
-   private HashSet<ApplicationUser> _selectedUsers = [];
-   private string? _searchString;
-
-   protected override async Task OnInitializedAsync()
-   {
-      await base.OnInitializedAsync();
-      await LoadUsersAsync();
-   }
-
-   private async Task LoadUsersAsync()
-   {
-      _users = await UserManager.Users.ToListAsync();
-   }
-
-   private void OnSelectedItemsChanged(HashSet<ApplicationUser> users)
-   {
-      _selectedUsers = users;
-      StateHasChanged();
-   }
-
-   private Func<ApplicationUser, bool> QuickFilter => u =>
-   {
-      if (string.IsNullOrWhiteSpace(_searchString)) return true;
-      if (u.DisplayName.Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
-      if (u.Email.Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
-      return false;
-   };
-
-   private async Task DeleteSelectedUser()
-   {
-      try
-      {
-         var successCount = 0;
-         var failureCount = 0;
-
-         foreach (var user in _selectedUsers)
-         {
-            var result = await UserManager.DeleteAsync(user);
-            if (!result.Succeeded) failureCount++;
-            successCount++;
-         }
-
-         if (failureCount > 0)
-         {
-            Snackbar.Add($"Delete failed for {failureCount} users", Severity.Error);
-         }
-         if (successCount > 0)
-         {
-            Snackbar.Add($"Successfully deleted {successCount} users", Severity.Success);
-         }
-      }
-      catch (Exception e)
-      {
-         Snackbar.Add($"Error deleting users: {e.Message}", Severity.Error);
-      }
-      finally
-      {
-         await LoadUsersAsync();
-         _selectedUsers.Clear();
-      }
-   }
-
-}
+<MudDialog @bind-Visible="@_deleteDialogVisible">
+   <TitleContent>
+      <MudText Typo="Typo.h5">Delete User?</MudText>
+   </TitleContent>
+   <DialogContent>
+      <MudText>Do you really want to delete these users?</MudText>
+   </DialogContent>
+   <DialogActions>
+      <MudButton OnClick="@ToggleDeleteDialog">Cancel</MudButton>
+      <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="@DeleteSelectedUsers">Delete</MudButton>
+   </DialogActions>
+</MudDialog>
+<MudDialog @bind-Visible="@_blockDialogVisible">
+   <TitleContent>
+      <MudText Typo="Typo.h5">Change block status?</MudText>
+   </TitleContent>
+   <DialogContent>
+      <MudText>Do you really want to change block status of these users?</MudText>
+   </DialogContent>
+   <DialogActions>
+      <MudButton OnClick="@ToggleBlockDialog">Cancel</MudButton>
+      <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="@BlockSelectedUsers">Change</MudButton>
+   </DialogActions>
+</MudDialog>

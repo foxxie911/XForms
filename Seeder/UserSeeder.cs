@@ -7,13 +7,15 @@ public class UserSeeder
 {
    public static async Task SeedUserAsync(IServiceProvider serviceProvider)
    {
+      const int TOTAL_USERS = 0;
+      
       using var scope = serviceProvider.CreateScope();
       var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
       var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
       await context.Database.EnsureCreatedAsync();
 
-      for (var i = 1; i <= 10; i++)
+      for (var i = 1; i <= TOTAL_USERS; i++)
       {
          var user = await userManager.FindByEmailAsync($"user{i}@gmail.com");
          

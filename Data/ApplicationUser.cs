@@ -9,7 +9,10 @@ public class ApplicationUser : IdentityUser
     [Required]
     [MaxLength(100, ErrorMessage = "User name cannot be longer than 100 characters.")]
     public required string DisplayName { get; set; }
+    
     [DataType(DataType.ImageUrl)]
     public string? AvatarUrl { get; set; }
+    
+    
 }
 

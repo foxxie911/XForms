@@ -32,12 +32,13 @@
         </MudAvatar>
     }
     <MudText>Hello @_displayName</MudText>
+    <MudText>@string.Join(",", _userRoles)</MudText>
 </div>
 
 @code
 {
     private string _displayName = string.Empty;
-    private string _userRole = string.Empty;
+    private List<string> _userRoles = [];
     private string? _avatarUrl;
     
     protected override async Task OnInitializedAsync()
@@ -50,5 +51,7 @@
             _displayName = user.DisplayName;
             _avatarUrl = user.AvatarUrl;
         }
+
+        _userRoles = (await UserManager.GetRolesAsync(user)).ToList();
     }
 }
