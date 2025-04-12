@@ -53,6 +53,7 @@ var builder = WebApplication.CreateBuilder(args);
     
     builder.Services.AddRazorPages();
     builder.Services.AddServerSideBlazor();
+    builder.Services.AddControllers();
 }
 
 var app = builder.Build();
@@ -77,9 +78,13 @@ var app = builder.Build();
     app.UseHttpsRedirection();
     app.UseAntiforgery();
     app.MapStaticAssets();
+    
+    app.UseAuthentication();
+    app.UseAuthorization();
+    app.MapControllers();
+    
     app.MapRazorComponents<App>()
         .AddInteractiveServerRenderMode();
-// Add additional endpoints required by the Identity /Account Razor components.
     app.MapAdditionalIdentityEndpoints();
     app.Run();
 }

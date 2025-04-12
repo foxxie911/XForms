@@ -4,7 +4,11 @@
 @using XForms.Data
 @using XForms.Data.Dtos
 
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
 @inject ISnackbar Snackbar
 
 @attribute [Authorize(Roles = "Admin")]
@@ -51,6 +55,13 @@
                Size="Size.Medium"
                OnClick="@ToggleBlockDialog"/>
          </MudTooltip>
+         <MudButton
+            Color="Color.Success"
+            Size="Size.Medium"
+            Variant="Variant.Outlined"
+            OnClick="@ToggleAdminRightsDialog">
+            Change Admin Rights
+         </MudButton>
          <MudButton>
 
          </MudButton>
@@ -61,15 +72,15 @@
       <PropertyColumn Sortable="true" Property="u => u.DisplayName"
                       Comparer="new MudBlazor.Utilities.NaturalComparer()"/>
       <PropertyColumn Sortable="true" Property="u => u.Email"/>
-      <TemplateColumn Title="Roles">
+      <TemplateColumn Title="Admin">
          <CellTemplate>
             @if (context.Item.Roles == string.Empty)
             {
-               <MudText>N/A</MudText>
+               <MudText>No</MudText>
             }
             else
             {
-               <MudText>@context.Item.Roles</MudText>
+               <MudText>Yes</MudText>
             }
          </CellTemplate>
       </TemplateColumn>
@@ -94,7 +105,7 @@
 
 <MudDialog @bind-Visible="@_deleteDialogVisible">
    <TitleContent>
-      <MudText Typo="Typo.h5">Delete User?</MudText>
+      <MudText Typo="Typo.h5">Delete User</MudText>
    </TitleContent>
    <DialogContent>
       <MudText>Do you really want to delete these users?</MudText>
@@ -106,7 +117,7 @@
 </MudDialog>
 <MudDialog @bind-Visible="@_blockDialogVisible">
    <TitleContent>
-      <MudText Typo="Typo.h5">Change block status?</MudText>
+      <MudText Typo="Typo.h5">Change block status</MudText>
    </TitleContent>
    <DialogContent>
       <MudText>Do you really want to change block status of these users?</MudText>
@@ -114,5 +125,17 @@
    <DialogActions>
       <MudButton OnClick="@ToggleBlockDialog">Cancel</MudButton>
       <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="@BlockSelectedUsers">Change</MudButton>
+   </DialogActions>
+</MudDialog>
+<MudDialog @bind-Visible="@_adminRightsDialogVisible">
+   <TitleContent>
+      <MudText Typo="Typo.h5">Change admin rights</MudText>
+   </TitleContent>
+   <DialogContent>
+      <MudText>Do you really want to change the admin rights of these users?</MudText>
+   </DialogContent>
+   <DialogActions>
+      <MudButton OnClick="@ToggleAdminRightsDialog">Cancel</MudButton>
+      <MudButton Variant="Variant.Filled" Color="Color.Warning" OnClick="@ChangeAdminRights">Change</MudButton>
    </DialogActions>
 </MudDialog>

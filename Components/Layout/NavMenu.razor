@@ -6,19 +6,33 @@
     <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
     <AuthorizeView>
         <Authorized>
-            <MudNavLink Href="auth" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Lock">Auth Required</MudNavLink>
-            <MudNavLink Href="Account/Manage" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">@context.User.Identity?.Name</MudNavLink>
+            <MudNavLink Href="auth" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Lock">Auth Required
+            </MudNavLink>
+            <MudNavLink Href="Account/Manage" Match="NavLinkMatch.Prefix"
+                        Icon="@Icons.Material.Filled.Person">@context.User.Identity?.Name</MudNavLink>
+            @*
             <form action="Account/Logout" method="post">
-                <AntiforgeryToken />
-                <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                <AntiforgeryToken/>
+                <input type="hidden" name="ReturnUrl" value="@currentUrl"/>
                 <button type="submit" class="mud-nav-link mud-ripple">
-                    <MudIcon Icon="@Icons.Material.Filled.Logout" Color="Color.Info" Class="mr-3"></MudIcon> Logout
+                    <MudIcon Icon="@Icons.Material.Filled.Logout" Color="Color.Info" Class="mr-3"></MudIcon>
+                    Logout
                 </button>
             </form>
+            *@
+            <MudNavLink
+                Href="/Account/LogOut"
+                Icon="@Icons.Material.Filled.Logout"
+                Match="NavLinkMatch.Prefix">
+                Logout
+            </MudNavLink>
         </Authorized>
         <NotAuthorized>
-            <MudNavLink Href="/Account/Register" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">Register</MudNavLink>
-            <MudNavLink Href="Account/Login" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Password">Login</MudNavLink>
+            <MudNavLink Href="/Account/Register" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">
+                Register
+            </MudNavLink>
+            <MudNavLink Href="Account/Login" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Password">Login
+            </MudNavLink>
         </NotAuthorized>
     </AuthorizeView>
 </MudNavMenu>
@@ -43,5 +57,6 @@
     {
         NavigationManager.LocationChanged -= OnLocationChanged;
     }
+
 }
 
