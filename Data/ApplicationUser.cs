@@ -6,13 +6,13 @@ namespace XForms.Data;
 // Add profile data for application users by adding properties to the ApplicationUser class
 public class ApplicationUser : IdentityUser
 {
+    // Properties (Not all extended from Identity User
     [Required]
-    [MaxLength(100, ErrorMessage = "User name cannot be longer than 100 characters.")]
-    public required string DisplayName { get; set; }
-    
+    [MaxLength(100, ErrorMessage = "Your given name cannot be longer than 100 characters.")]
+    public required string DisplayName { get; init; }
     [DataType(DataType.ImageUrl)]
-    public string? AvatarUrl { get; set; }
+    public string? AvatarUrl { get; init; }
     
-    
+    // Navigation
+    public virtual ICollection<Template> Templates { get; set; }
 }
-

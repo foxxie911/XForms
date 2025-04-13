@@ -1,17 +1,19 @@
 using CloudinaryDotNet;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor;
 using MudBlazor.Services;
 using XForms.Components;
 using XForms.Components.Account;
 using XForms.Data;
 using XForms.Seeder;
+using XForms.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 {
     builder.Services.AddMudServices();
+    builder.Services.AddMudMarkdownServices();
     builder.Services.AddRazorComponents()
         .AddInteractiveServerComponents();
 
@@ -32,8 +34,14 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseNpgsql(connectionString));
     builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+    
+    // Custom Service
+    builder.Services.AddScoped<TemplateService>();
 
-    builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
+    builder.Services.AddIdentityCore<ApplicationUser>(options =>
+        {
+            options.SignIn.RequireConfirmedAccount = false;
+        })
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddSignInManager()
