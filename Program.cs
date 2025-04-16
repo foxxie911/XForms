@@ -37,6 +37,7 @@ var builder = WebApplication.CreateBuilder(args);
     
     // Custom Service
     builder.Services.AddScoped<TemplateService>();
+    builder.Services.AddScoped<QuestionService>();
 
     builder.Services.AddIdentityCore<ApplicationUser>(options =>
         {

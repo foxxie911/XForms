@@ -7,25 +7,24 @@ public class Template
 {
     // Properties
     [Key]
-    public int Id { get; init; }
+    public int Id { get; set; }
     [Required]
-    [MaxLength(100, ErrorMessage = "Title has to be under 100 characters")]
-    public required string Title { get; init; }
+    public string Title { get; set; }
     [DataType(DataType.MultilineText)]
-    public string? Description { get; init; }
+    public string? Description { get; set; }
     [DataType(DataType.ImageUrl)]
-    public string? ImageUrl { get; init; }
-    public bool IsPublic { get; init; }
+    public string? ImageUrl { get; set; }
+    public bool IsPublic { get; set; }
     [DataType(DataType.DateTime)]
-    public DateTime CreatedAt { get; init; }
+    public DateTime CreatedAt { get; set; }
     [DataType(DataType.DateTime)]
-    public DateTime? UpdatedAt { get; init; }
+    public DateTime? UpdatedAt { get; set; }
     [Required]
-    public string CreatorId { get; init; }
+    public string? CreatorId { get; set; }
    
     // Locking
-    [Timestamp]
-    public byte[] Version { get; set;}
+    [ConcurrencyCheck]
+    public Guid Version { get; set; }
 
     // Navigation
     [Key, ForeignKey("CreatorId")]

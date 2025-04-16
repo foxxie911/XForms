@@ -20,8 +20,8 @@ public class Question
     public int TemplateId { get; set; }
    
     // Locking
-    [Timestamp]
-    public byte[] Version { get; set; }
+    [ConcurrencyCheck]
+    public Guid Version { get; set; }
     
     // Navigation
     [Key, ForeignKey("TemplateId")]

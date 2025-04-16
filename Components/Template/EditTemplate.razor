@@ -1,0 +1,129 @@
+@page "/template/{Id:int}"
+@using XForms.Data
+
+
+@if (_template is null)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
+}
+else
+{
+    <MudContainer Gutters="true" MaxWidth="MaxWidth.Medium">
+
+        @*Cover photo configuration start*@
+        @if (_template.ImageUrl is null)
+        {
+            <MudPaper Height="100px" Class="mud-theme-primary rounded-lg mt-2"/>
+        }
+        else
+        {
+            <MudImage
+                Src="@_template.ImageUrl"
+                ObjectFit="ObjectFit.Contain"
+                Fluid="true"
+                Class="rounded-lg pt-2"/>
+        }
+        <div class="d-flex">
+            @if (_coverImagePublicId is not null)
+            {
+                <MudFileUpload
+                    T="IBrowserFile"
+                    Accept=".png, .jpg, .jpeg"
+                    FilesChanged="ReplaceCoverPhoto">
+                    <ActivatorContent>
+                        <MudButton
+                            Variant="Variant.Text"
+                            Color="Color.Primary"
+                            StartIcon="@Icons.Material.Filled.Image">
+                            Replace Cover
+                        </MudButton>
+                    </ActivatorContent>
+                </MudFileUpload>
+                <MudButton
+                    OnClick="RemoveCoverPhoto"
+                    Variant="Variant.Text"
+                    Color="Color.Primary"
+                    StartIcon="@Icons.Material.Filled.Cancel">
+                    Remove Cover
+                </MudButton>
+            }
+            else
+            {
+                <MudFileUpload
+                    T="IBrowserFile"
+                    Accept=".png, .jpg, .jpeg"
+                    FilesChanged="UploadCoverPhoto">
+                    <ActivatorContent>
+                        <MudButton
+                            Variant="Variant.Text"
+                            Color="Color.Primary"
+                            StartIcon="@Icons.Material.Filled.Image">
+                            Add Cover
+                        </MudButton>
+                    </ActivatorContent>
+                </MudFileUpload>
+            }
+        </div>
+        @*Cover photo configuration end*@
+
+        @*Template Cnnfiguration start*@
+        <MudPaper Width="100%" Class="rounded-lg pa-4">
+            <MudTextField
+                T="string"
+                @bind-Text="@_template.Title"
+                Typo="Typo.h4"
+                AutoFocus="true"
+                OnBlur="UpdateTemplate"/>
+            <MudGrid Class="pt-4">
+                <MudItem xs="12">
+                    <MudTextField
+                        T="string"
+                        Lines="2"
+                        OnBlur="UpdateTemplate"
+                        AutoFocus="true"
+                        @bind-Text="@_template.Description"
+                        Label="Description"
+                        Immediate="true"/>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudText Typo="Typo.subtitle2">Preview</MudText>
+                    <MudMarkdown Value="@_template.Description"/>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+        @if (!_template.Questions.Any())
+        {
+            <MudProgressCircular/>
+        }
+        else
+        {
+            <MudDropContainer
+                T="Question"
+                Items="@_template.Questions.OrderBy(q => q.Order)"
+                ItemDropped="@ReorderQuestions"
+                ItemsSelector="@((_, _) => true)"
+                @ref="_dragDropContainer"
+                Class="pt-4">
+                <ChildContent>
+                    <MudPaper Class="pa-2">
+                        <MudText Typo="Typo.h4" Class="ma-4">Questions</MudText>
+                        <MudDropZone T="Question" AllowReorder="true" Class="flex flex-wrap"/>
+                    </MudPaper>
+                </ChildContent>
+                <ItemRenderer>
+                    <QuestionBody Question="@context" QuestionDeleted="@DeleteQuestion"/>
+                </ItemRenderer>
+            </MudDropContainer>
+        }
+        <MudButton
+            Variant="Variant.Filled"
+            Color="Color.Surface"
+            OnClick="CreateQuestion"
+            StartIcon="@Icons.Material.Filled.Add"
+            IconSize="Size.Large"
+            Style="height: 50px; width: 100%"
+            Class="mt-4"/>
+
+        @*Template Configuration end*@
+    </MudContainer>
+}

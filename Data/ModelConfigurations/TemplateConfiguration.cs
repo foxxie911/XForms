@@ -17,6 +17,7 @@ public class TemplateConfiguration : IEntityTypeConfiguration<Template>
         builder.HasIndex(t => t.Title);
         
         // Concurrency or Optimistic Locking
-        builder.Property(t => t.Version).IsRowVersion();
+        builder.Property(t => t.Version)
+            .IsConcurrencyToken();
    }
 }

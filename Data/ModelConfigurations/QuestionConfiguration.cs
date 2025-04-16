@@ -17,6 +17,7 @@ public class QuestionConfiguration : IEntityTypeConfiguration<Question>
         builder.HasIndex(q => new { q.TemplateId, q.Order });
         
         // Concurrency or Optimistic Locking
-        builder.Property(q => q.Version).IsRowVersion();
+        builder.Property(q => q.Version)
+            .IsConcurrencyToken();
    }
 }

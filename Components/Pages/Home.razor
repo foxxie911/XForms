@@ -1,12 +1,45 @@
 ﻿@page "/"
-@using XForms.Components.Account.Pages
+@using Microsoft.AspNetCore.Identity
+@using XForms.Data
+@using XForms.Services
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<ApplicationUser> UserManager
+@inject TemplateService TemplateService
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
 
 <PageTitle>Home</PageTitle>
 
 <MudText Typo="Typo.h3" GutterBottom="true">Hello, world!</MudText>
 <MudText Class="mb-8">Welcome to your new app, powered by MudBlazor and the .NET 9 Template!</MudText>
 
-<AvatarUpload/>
+<AuthorizeView>
+    <MudIconButton
+        Icon="@Icons.Material.Filled.Add"
+        Variant="Variant.Outlined"
+        Size="Size.Large"
+        Style="height: 300px; width: 450px"
+        OnClick="NewTemplate"/>
+</AuthorizeView>
 
-<AvatarUpload />
+
+@code
+{
+    private ApplicationUser? _currentUser;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        _currentUser = await UserManager.GetUserAsync(authState.User);
+
+    }
+
+    private async Task NewTemplate()
+    {
+        if (_currentUser is null)
+            Snackbar.Add("No user logged in");
+        var templateId = await TemplateService.CreateTemplate(_currentUser!.Id);
+        NavigationManager.NavigateTo($"/template/{templateId}");
+    }
+}

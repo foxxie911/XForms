@@ -1,0 +1,58 @@
+@using XForms.Data
+
+@if (Question is null)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
+}
+else
+{
+    <MudPaper MaxWidth="100%" Class="rounded-lg px-4 ma-4">
+        <div class="d-flex justify-end">
+            <MudIconButton 
+                Icon="@Icons.Material.Filled.Close" 
+                Size="Size.Medium"
+                OnClick="OnQuestionDeleted"
+                Class="my-2"/>
+        </div>
+        <MudGrid>
+            <MudItem xs="12" sm="8">
+                <MudTextField
+                    T="string"
+                    Variant="Variant.Outlined"
+                    @bind-Text="Question.Title"
+                    AutoFocus="true"
+                    OnBlur="UpdateQuestion"
+                    Label="Question"/>
+            </MudItem>
+            <MudItem xs="12" sm="4">
+                <MudSelect
+                    T="QuestionType"
+                    @bind-Value="Question.Type"
+                    Label="Question Type"
+                    Variant="Variant.Outlined">
+
+                    <MudSelectItem Value="QuestionType.Singleline"/>
+                    <MudSelectItem Value="QuestionType.Multiline"/>
+                    <MudSelectItem Value="QuestionType.Integer"/>
+                    <MudSelectItem Value="QuestionType.Checkbox"/>
+                </MudSelect>
+            </MudItem>
+        </MudGrid>
+        <MudGrid Class="pt-4">
+            <MudItem xs="12">
+                <MudTextField
+                    T="string"
+                    Lines="2"
+                    OnBlur="UpdateQuestion"
+                    AutoFocus="true"
+                    @bind-Text="Question.Description"
+                    Label="Question Description"
+                    Immediate="true"/>
+            </MudItem>
+            <MudItem xs="12" Class="pb-4">
+                <MudText Typo="Typo.subtitle2">Preview</MudText>
+                <MudMarkdown Value="@Question.Description"/>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+}
