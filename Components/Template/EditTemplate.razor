@@ -1,6 +1,7 @@
-@page "/template/{Id:int}"
+@page "/template/edit/{Id:int}"
+@using Microsoft.AspNetCore.Authorization
 @using XForms.Data
-
+@attribute [Authorize]
 
 @if (_template is null)
 {

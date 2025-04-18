@@ -40,6 +40,6 @@
         if (_currentUser is null)
             Snackbar.Add("No user logged in");
         var templateId = await TemplateService.CreateTemplate(_currentUser!.Id);
-        NavigationManager.NavigateTo($"/template/{templateId}");
+        NavigationManager.NavigateTo($"/template/edit/{templateId}");
     }
 }

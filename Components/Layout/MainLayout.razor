@@ -1,18 +1,37 @@
-﻿@inherits LayoutComponentBase
+﻿@using XForms.Data
+@inherits LayoutComponentBase
 
-<MudThemeProvider />
-<MudPopoverProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
+<MudThemeProvider/>
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
 <MudLayout>
     <MudAppBar Elevation="1">
-        <MudStaticNavDrawerToggle DrawerId="nav-drawer" Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" />
+        <MudStaticNavDrawerToggle DrawerId="nav-drawer" Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit"
+                                  Edge="Edge.Start"/>
         <MudText Typo="Typo.h5" Class="ml-3">Application</MudText>
-        <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+        <MudSpacer/>
+        <MudPaper Width="40%" Class="px-2">
+            <MudAutocomplete
+                T="Template"
+                AdornmentIcon="@Icons.Material.Filled.Search"
+                Variant="Variant.Text"
+                Adornment="Adornment.Start"
+                AdornmentColor="Color.Inherit"
+                @bind-text="_searchString"
+                @bind-Value="_targetTemplate"
+                ResetValueOnEmptyText="true"
+                ValueChanged="CreateForm"
+                Placeholder="Search"
+                ToStringFunc="@(template => template?.Title)"
+                SearchFunc="SearchTemplates"
+                Class="my-2"/>
+        </MudPaper>
+        <MudSpacer/>
+        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End"/>
     </MudAppBar>
     <MudDrawer id="nav-drawer" @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
-        <NavMenu />
+        <NavMenu/>
     </MudDrawer>
     <MudMainContent Class="pt-16 pa-4">
         @Body
@@ -25,9 +44,4 @@
     <a href="." class="reload">Reload</a>
     <span class="dismiss">🗙</span>
 </div>
-
-@code {
-    private bool _drawerOpen = true;
-}
-
 

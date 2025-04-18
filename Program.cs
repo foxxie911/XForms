@@ -1,9 +1,11 @@
 using CloudinaryDotNet;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor;
 using MudBlazor.Services;
+using XForms.Authorization;
 using XForms.Components;
 using XForms.Components.Account;
 using XForms.Data;
@@ -34,20 +36,25 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseNpgsql(connectionString));
     builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-    
+
     // Custom Service
     builder.Services.AddScoped<TemplateService>();
     builder.Services.AddScoped<QuestionService>();
+    builder.Services.AddScoped<SearchService>();
 
-    builder.Services.AddIdentityCore<ApplicationUser>(options =>
-        {
-            options.SignIn.RequireConfirmedAccount = false;
-        })
+    builder.Services.AddIdentityCore<ApplicationUser>(options => { options.SignIn.RequireConfirmedAccount = false; })
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddSignInManager()
         .AddDefaultTokenProviders();
     builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+    builder.Services.AddScoped<IAuthorizationHandler, TemplateEditorHandler>();
+
+    builder.Services.AddAuthorization(options =>
+    {
+        options.AddPolicy("TemplateEditor", policy =>
+            policy.Requirements.Add(new TemplateEditorRequirement()));
+    });
 
     var cloudinaryConfiguration = builder.Configuration.GetSection("Cloudinary");
     var account = new Account
@@ -56,10 +63,15 @@ var builder = WebApplication.CreateBuilder(args);
         cloudinaryConfiguration["ApiKey"],
         cloudinaryConfiguration["ApiSecret"]
     );
-    var cloudinary = new Cloudinary(account);
-    cloudinary.Api.Secure = true;
+    var cloudinary = new Cloudinary(account)
+    {
+        Api =
+        {
+            Secure = true
+        }
+    };
     builder.Services.AddSingleton(cloudinary);
-    
+
     builder.Services.AddRazorPages();
     builder.Services.AddServerSideBlazor();
     builder.Services.AddControllers();
@@ -87,11 +99,11 @@ var app = builder.Build();
     app.UseHttpsRedirection();
     app.UseAntiforgery();
     app.MapStaticAssets();
-    
+
     app.UseAuthentication();
     app.UseAuthorization();
     app.MapControllers();
-    
+
     app.MapRazorComponents<App>()
         .AddInteractiveServerRenderMode();
     app.MapAdditionalIdentityEndpoints();

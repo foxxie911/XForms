@@ -1,7 +1,4 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using MudBlazor;
 using XForms.Data;
 
 namespace XForms.Services;
@@ -42,13 +39,14 @@ public class TemplateService(ApplicationDbContext context)
             return;
         }
 
-        dbTemplate.Title = template!.Title;
+        dbTemplate.Title = template.Title;
         dbTemplate.Description = template.Description;
         dbTemplate.ImageUrl = template.ImageUrl;
         dbTemplate.IsPublic = template.IsPublic;
         dbTemplate.UpdatedAt = DateTime.UtcNow;
         dbTemplate.Version = Guid.NewGuid();
 
+        // Don't make it async!!! Breaks application.
         context.SaveChanges();
     }
 

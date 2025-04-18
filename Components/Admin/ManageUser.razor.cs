@@ -103,8 +103,8 @@ public partial class ManageUser : ComponentBase
     {
         var result = query
             .Where(u =>
-                EF.Functions.Like(u.DisplayName, $"%{searchString}%") ||
-                EF.Functions.Like(u.Email, $"%{searchString}%")).ToList();
+                EF.Functions.ILike(u.DisplayName, $"%{searchString}%") ||
+                EF.Functions.ILike(u.Email!, $"%{searchString}%")).ToList();
         var resultCount = result.Count;
         return Tuple.Create(result.ToPagedList(page + 1, pageSize).ToList(), resultCount);
     }

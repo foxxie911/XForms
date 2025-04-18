@@ -8,8 +8,8 @@ else
 {
     <MudPaper MaxWidth="100%" Class="rounded-lg px-4 ma-4">
         <div class="d-flex justify-end">
-            <MudIconButton 
-                Icon="@Icons.Material.Filled.Close" 
+            <MudIconButton
+                Icon="@Icons.Material.Filled.Close"
                 Size="Size.Medium"
                 OnClick="OnQuestionDeleted"
                 Class="my-2"/>
@@ -28,13 +28,12 @@ else
                 <MudSelect
                     T="QuestionType"
                     @bind-Value="Question.Type"
-                    Label="Question Type"
+                    SelectedValuesChanged="UpdateQuestion"
                     Variant="Variant.Outlined">
 
                     <MudSelectItem Value="QuestionType.Singleline"/>
-                    <MudSelectItem Value="QuestionType.Multiline"/>
-                    <MudSelectItem Value="QuestionType.Integer"/>
-                    <MudSelectItem Value="QuestionType.Checkbox"/>
+                    <MudSelectItem Value="QuestionType.Paragraph"/>
+                    <MudSelectItem Value="QuestionType.Number"/>
                 </MudSelect>
             </MudItem>
         </MudGrid>
