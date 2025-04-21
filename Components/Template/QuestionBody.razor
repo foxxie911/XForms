@@ -14,11 +14,11 @@ else
                 OnClick="OnQuestionDeleted"
                 Class="my-2"/>
         </div>
-        <MudGrid>
+        <MudGrid >
             <MudItem xs="12" sm="8">
                 <MudTextField
                     T="string"
-                    Variant="Variant.Outlined"
+                    Variant="Variant.Filled"
                     @bind-Text="Question.Title"
                     AutoFocus="true"
                     OnBlur="UpdateQuestion"
