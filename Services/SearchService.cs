@@ -3,18 +3,17 @@ using XForms.Data;
 
 namespace XForms.Services;
 
-public class SearchService(ApplicationDbContext dbContext)
+public class SearchService(ApplicationDbContext context)
 {
-    private readonly ApplicationDbContext _context = dbContext;
 
     public async Task<IEnumerable<Template>> SearchTemplateByTitleAsync(string searchString, int maxResult = 5)
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return [];
 
-        var templates = await _context.Templates
+        var templates = await context.Templates
             .Where(t =>
-                EF.Functions.ILike(t.Title, $"%{searchString}%"))
+                EF.Functions.ILike(t.Title, $"%{searchString}%") && t.IsPublic == true)
             .Take(maxResult)
             .ToListAsync();
 

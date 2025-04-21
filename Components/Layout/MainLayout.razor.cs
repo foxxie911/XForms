@@ -11,7 +11,6 @@ public partial class MainLayout : LayoutComponentBase
     // Class variables
     private bool _drawerOpen = true;
     private string _searchString = string.Empty;
-    private Data.Template? _targetTemplate;
 
     public async Task<IEnumerable<Data.Template>>? SearchTemplates(string? s, CancellationToken cancellationToken)
     {
@@ -19,8 +18,8 @@ public partial class MainLayout : LayoutComponentBase
         return templates;
     }
 
-    public void CreateForm()
+    public void CreateForm(Data.Template template)
     {
-        
+        throw new System.NotImplementedException();
     }
 }
