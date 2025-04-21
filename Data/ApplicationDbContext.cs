@@ -8,6 +8,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     public DbSet<Template> Templates { get; set; }
     public DbSet<Question> Questions { get; set; }
+    public DbSet<Form> Forms { get; set; }
+    public DbSet<Answer> Answers { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -15,5 +17,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         // Model Configurations
         builder.ApplyConfiguration(new TemplateConfiguration());
         builder.ApplyConfiguration(new QuestionConfiguration());
+        builder.ApplyConfiguration(new FormConfiguration());
+        builder.ApplyConfiguration(new AnswerConfiguration());
     }
 }

@@ -14,7 +14,7 @@ public class TemplateConfiguration : IEntityTypeConfiguration<Template>
             .OnDelete(DeleteBehavior.Cascade);
 
         // Fast Query
-        builder.HasIndex(t => t.Title);
+        builder.HasIndex(t => new{ t.Title, t.CreatorId});
         
         // Concurrency or Optimistic Locking
         builder.Property(t => t.Version)

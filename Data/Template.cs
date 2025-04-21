@@ -28,6 +28,7 @@ public class Template
 
     // Navigation
     [Key, ForeignKey("CreatorId")]
-    public virtual ApplicationUser Creator { get; init; }
+    public virtual ApplicationUser Creator { get; set; }
     public virtual ICollection<Question> Questions { get; set; }
+    public virtual ICollection<Form> Forms { get; set; }
 }
