@@ -8,7 +8,7 @@ public class TemplateService(ApplicationDbContext context)
     public async Task<int> CreateTemplate(string? userId)
     {
         if (userId is null)
-            Console.WriteLine("User not authorized, template creation failed");    
+            Console.WriteLine("User not authorized, template creation failed");
         var template = new Template
         {
             Title = "Untitled",
@@ -66,11 +66,54 @@ public class TemplateService(ApplicationDbContext context)
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Template>> GetAllUserTemplatesAsync(string userId)
+    public IEnumerable<Template> GetTemplatesByUserIdAsync(string userId)
     {
-        return await context.Templates
+        return context.Templates
             .Where(u => u.CreatorId == userId)
-            .Include(q => q.Questions)
-            .ToListAsync();
+            .Include(q => q.Questions);
+    }
+
+    public async Task DeleteTemplate(Template? template)
+    {
+        if (template is null)
+        {
+            Console.WriteLine("Template not found");
+            return;
+        }
+
+        context.Templates.Remove(template!);
+        await context.SaveChangesAsync();
+    }
+
+    public bool DeleteTemplates(IEnumerable<Template> templates)
+    {
+        try
+        {
+            context.Templates.RemoveRange(templates);
+            context.SaveChanges();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"{e.Message}");
+            return false;
+        }
+    }
+
+    public async Task<bool> MakePublicAsync(Template? template)
+    {
+        if (template is null) return false;
+        try
+        {
+            template!.IsPublic = true;
+            await context.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"{e.Message}");
+        }
+
+        return false;
     }
 }
