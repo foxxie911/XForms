@@ -11,6 +11,7 @@ public class Form
     public int TemplateId { get; set; }
     [Required]
     public string CreatorId { get; set; }
+    public bool IsSubmitted { get; set; }
     [DataType(DataType.DateTime)] 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     [DataType(DataType.DateTime)]
@@ -22,8 +23,8 @@ public class Form
     
     // Navigation
     [ForeignKey("CreatorId")]
-    public virtual ApplicationUser Creator { get; set; }
+    public virtual ApplicationUser? Creator { get; set; }
     [ForeignKey("TemplateId")]
-    public virtual Template Template { get; set; }
-    public virtual ICollection<Answer> Answers { get; set; }
+    public virtual Template? Template { get; set; }
+    public virtual ICollection<Answer>? Answers { get; set; }
 }

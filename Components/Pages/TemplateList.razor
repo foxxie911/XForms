@@ -6,18 +6,17 @@
 }
 else
 {
-    <MudDataGrid
-        T="Template"
-        Items="_templates"
-        SortMode="SortMode.Multiple"
-        @bind-SelectedItems="_selectedTemplates"
-        @ref="_templateDataGrid"
-        MultiSelection="true"
-        RowClick="NavigateToTemplate"
-        Breakpoint="Breakpoint.Sm"
-        Hover="true"
-        Striped="true"
-        Dense="true">
+    <MudDataGrid T="Template"
+                 Items="_templates"
+                 SortMode="SortMode.Multiple"
+                 @bind-SelectedItems="_selectedTemplates"
+                 @ref="_templateDataGrid"
+                 MultiSelection="true"
+                 RowClick="NavigateToTemplate"
+                 Breakpoint="Breakpoint.Sm"
+                 Hover="true"
+                 Striped="true"
+                 Dense="true">
         <ToolBarContent>
             <MudText Typo="Typo.h5">Templates</MudText>
             <MudSpacer/>

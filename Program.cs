@@ -41,6 +41,8 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<TemplateService>();
     builder.Services.AddScoped<QuestionService>();
     builder.Services.AddScoped<SearchService>();
+    builder.Services.AddScoped<FormService>();
+    builder.Services.AddScoped<AnswerService>();
 
     builder.Services.AddIdentityCore<ApplicationUser>(options => { options.SignIn.RequireConfirmedAccount = false; })
         .AddRoles<IdentityRole>()

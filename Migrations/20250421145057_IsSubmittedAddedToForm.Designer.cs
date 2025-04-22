@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using XForms.Data;
@@ -11,9 +12,11 @@ using XForms.Data;
 namespace XForms.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250421145057_IsSubmittedAddedToForm")]
+    partial class IsSubmittedAddedToForm
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -165,16 +168,18 @@ namespace XForms.Migrations
                     b.Property<int>("FormId")
                         .HasColumnType("integer");
 
-                    b.Property<long?>("Number")
+                    b.Property<long>("Number")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Paragraph")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("QuestionId")
                         .HasColumnType("integer");
 
                     b.Property<string>("SingleLine")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 

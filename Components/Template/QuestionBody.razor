@@ -14,23 +14,23 @@ else
                 OnClick="OnQuestionDeleted"
                 Class="my-2"/>
         </div>
-        <MudGrid >
+        <MudGrid>
             <MudItem xs="12" sm="8">
                 <MudTextField
                     T="string"
                     Variant="Variant.Filled"
-                    @bind-Text="Question.Title"
                     AutoFocus="true"
-                    OnBlur="UpdateQuestion"
+                    @bind-Text="Question.Title"
+                    DebounceInterval="500"
+                    OnDebounceIntervalElapsed="UpdateQuestion"
                     Label="Question"/>
             </MudItem>
             <MudItem xs="12" sm="4">
-                <MudSelect
-                    T="QuestionType"
-                    @bind-Value="Question.Type"
-                    SelectedValuesChanged="UpdateQuestion"
-                    Variant="Variant.Outlined">
-
+                <MudSelect T="QuestionType"
+                           @bind-Value="Question.Type"
+                           AutoFocus="true"
+                           SelectedValuesChanged="UpdateQuestion"
+                           Variant="Variant.Outlined">
                     <MudSelectItem Value="QuestionType.Singleline"/>
                     <MudSelectItem Value="QuestionType.Paragraph"/>
                     <MudSelectItem Value="QuestionType.Number"/>
@@ -39,14 +39,14 @@ else
         </MudGrid>
         <MudGrid Class="pt-4">
             <MudItem xs="12">
-                <MudTextField
-                    T="string"
-                    Lines="2"
-                    OnBlur="UpdateQuestion"
-                    AutoFocus="true"
-                    @bind-Text="Question.Description"
-                    Label="Question Description"
-                    Immediate="true"/>
+                <MudTextField T="string"
+                              AutoFocus="true"
+                              Lines="2"
+                              DebounceInterval="500"
+                              OnDebounceIntervalElapsed="UpdateQuestion"
+                              @bind-Text="Question.Description"
+                              Label="Question Description"
+                              Immediate="true"/>
             </MudItem>
             <MudItem xs="12" Class="pb-4">
                 <MudText Typo="Typo.subtitle2">Preview</MudText>

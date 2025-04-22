@@ -1,0 +1,58 @@
+@page "/form/edit/{Id:int}"
+
+@if (_form is null)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" Class="my-2"/>
+}
+else
+{
+    <MudContainer MaxWidth="MaxWidth.Medium" Gutters="true">
+        @if (_form.Template!.ImageUrl is null)
+        {
+            <MudPaper Height="100px" Class="blue-gray lighten-4 rounded-lg mt-2"/>
+        }
+        else
+        {
+            <MudImage Src="@_form.Template.ImageUrl"
+                      ObjectFit="ObjectFit.Contain"
+                      Fluid="true"
+                      Class="rounded-lg pt-2"/>
+        }
+
+        <MudPaper Elevation="0" Class="d-flex justify-end my-2">
+            @if (_form.IsSubmitted)
+            {
+                <MudButton Variant="Variant.Filled"
+                           Disabled="true"
+                           Color="Color.Success">
+                    Submitted
+                </MudButton>
+            }
+            else
+            {
+                <MudButton Variant="Variant.Filled"
+                           OnClick="SubmitForm"
+                           Color="Color.Primary">
+                    Submit
+                </MudButton>
+            }
+        </MudPaper>
+
+        <MudPaper Width="100%" Class="pa-4 my-2">
+            <MudText Typo="Typo.h4" GutterBottom="true">@_form.Template.Title</MudText>
+            <MudMarkdown Value="@_form.Template.Description"/>
+        </MudPaper>
+
+        @if (!_form.Template.Questions.Any())
+        {
+            <MudText Typo="Typo.h4" Align="Align.Center" Class="mt-4">To Questions</MudText>
+        }
+        else
+        {
+            @foreach (var question in _form.Template.Questions.OrderBy(q => q.Order))
+            {
+                <AnswerBody Question="question" FormId="@_form.Id" IsSubmitted="@_form.IsSubmitted"/>
+            }
+        }
+    </MudContainer>
+}

@@ -8,10 +8,10 @@ public class Answer
     [Key]
     public int Id { get; set; }
     [MaxLength(100, ErrorMessage = "Answer should be less than 100 characters")]
-    public string SingleLine { get; set; }
+    public string? SingleLine { get; set; }
     [DataType(DataType.MultilineText)]
-    public string Paragraph { get; set; }
-    public uint Number { get; set; }
+    public string? Paragraph { get; set; }
+    public uint? Number { get; set; }
     [Required]
     public int QuestionId { get; set; }
     [Required]

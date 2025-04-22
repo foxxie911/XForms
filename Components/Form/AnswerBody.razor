@@ -1,0 +1,56 @@
+@using XForms.Data
+@if (_answer is null)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" Class="d-flex justify-center pt-4"/>
+}
+else
+{
+    <MudPaper Width="100%" Class="rounded-lg pa-4 my-2">
+        <MudText Typo="Typo.h6" GutterBottom="true">@Question.Title</MudText>
+        <MudMarkdown Value="@Question.Description"/>
+        @if (Question.Type == QuestionType.Singleline)
+        {
+            @if (IsSubmitted)
+            {
+                <MudText GutterBottom="true">@_answer.SingleLine</MudText>
+            }
+            else
+            {
+                <MudTextField T="string"
+                              AutoFocus="true"
+                              @bind-Value="@_answer.SingleLine" DebounceInterval="500"
+                              OnDebounceIntervalElapsed="UpdateAnswer" Variant="Variant.Text" Label="Short Answer"/>
+            }
+        }
+
+        @if (Question.Type == QuestionType.Paragraph)
+        {
+            @if (IsSubmitted)
+            {
+                <MudText GutterBottom="true">@_answer.Paragraph</MudText>
+            }
+            else
+            {
+                <MudTextField T="string"
+                              AutoFocus="true"
+                              Lines="3" @bind-value="@_answer.Paragraph" DebounceInterval="500"
+                              OnDebounceIntervalElapsed="UpdateAnswer" Variant="Variant.Text" Label="Long Answer"/>
+            }
+        }
+
+        @if (Question.Type == QuestionType.Number)
+        {
+            @if (IsSubmitted)
+            {
+                <MudText GutterBottom="true">@_answer.Number.ToString()</MudText>
+            }
+            else
+            {
+                <MudNumericField HideSpinButtons="true"
+                                 AutoFocus="true"
+                                 @bind-value="@_answer.Number" DebounceInterval="500"
+                                 OnDebounceIntervalElapsed="UpdateAnswer" Variant="Variant.Text" Label="Number"/>
+            }
+        }
+    </MudPaper>
+}
