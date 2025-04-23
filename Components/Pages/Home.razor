@@ -18,6 +18,20 @@ else
             Class="my-4">
             Create
         </MudButton>
-        <TemplateList UserId="@_currentUser!.Id"/>
+        <MudButton Variant="Variant.Text"
+                   Color="Color.Primary"
+                   OnClick="() => _selectedComponent = (typeof(TemplateList))">
+            Templates
+        </MudButton>
+        <MudButton Variant="Variant.Text"
+                   Color="Color.Primary"
+                   OnClick="() => _selectedComponent = (typeof(FormList))">
+            Forms
+        </MudButton>
+        <DynamicComponent Type="_selectedComponent"
+                          Parameters="@(new Dictionary<string, object>()
+                                      {
+                                          { "UserId", _currentUser.Id }
+                                      })"/>
     </AuthorizeView>
 }

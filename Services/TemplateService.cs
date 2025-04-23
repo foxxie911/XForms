@@ -66,11 +66,10 @@ public class TemplateService(ApplicationDbContext context)
             .ToListAsync();
     }
 
-    public IEnumerable<Template> GetTemplatesByUserIdAsync(string userId)
+    public IEnumerable<Template> GetTemplatesByUserId(string userId)
     {
         return context.Templates
-            .Where(u => u.CreatorId == userId)
-            .Include(q => q.Questions);
+            .Where(u => u.CreatorId == userId);
     }
 
     public async Task DeleteTemplate(Template? template)

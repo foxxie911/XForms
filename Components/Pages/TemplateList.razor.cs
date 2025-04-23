@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Components;
-using Microsoft.CodeAnalysis;
 using MudBlazor;
 using XForms.Services;
 
@@ -23,7 +22,7 @@ public partial class TemplateList : ComponentBase
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        _templates = TemplateService!.GetTemplatesByUserIdAsync(UserId);
+        _templates = TemplateService!.GetTemplatesByUserId(UserId);
     }
     
     private void DeleteSelectedTemplates()

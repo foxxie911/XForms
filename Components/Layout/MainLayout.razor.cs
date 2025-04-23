@@ -36,23 +36,24 @@ public partial class MainLayout : LayoutComponentBase
         return templates;
     }
 
-    public async Task CreateForm(Data.Template template)
+    public async Task CreateForm(Data.Template? template)
     {
-        var userForm = await FormService!.FindFormByUserId(_user!.Id);
+        if (template == null) return;
+        var userForm = await FormService!.FindFormByUserAndTemplateId(_user!.Id, template.Id);
         if (userForm is null)
         { 
             var formId = await FormService!.CreateForm(_user!.Id, template.Id);
             if (formId > -1)
             {
                 Snackbar!.Add("Form Successfully created", Severity.Success);
-                NavigationManager!.NavigateTo($"/form/edit/{formId}");
+                NavigationManager!.NavigateTo($"/form/edit/{formId}", forceLoad: true);
             }
-            if (formId == -1) Snackbar!.Add("Form Creation Failed", Severity.Error);
+            Snackbar!.Add("Form Creation Failed", Severity.Error);
         }
 
         if (userForm is not null)
         {
-            NavigationManager!.NavigateTo("/form/edit/" + userForm.Id);
+            NavigationManager!.NavigateTo("/form/edit/" + userForm.Id, forceLoad: true);
         }
         
     }

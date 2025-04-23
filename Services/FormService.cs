@@ -1,9 +1,11 @@
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using XForms.Data;
 
 namespace XForms.Services;
 
-public class FormService (ApplicationDbContext context)
+public class FormService(ApplicationDbContext context)
 {
     public async Task<int> CreateForm(string userId, int templateId)
     {
@@ -44,15 +46,16 @@ public class FormService (ApplicationDbContext context)
         {
             Console.WriteLine($"{e.Message}");
         }
-        
+
         return null!;
     }
 
-    public async Task<Form> FindFormByUserId(string userId)
+    public async Task<Form> FindFormByUserAndTemplateId(string userId, int templateId)
     {
         try
         {
-            var form = await context.Forms.FirstOrDefaultAsync(f => f.CreatorId == userId);
+            var form = await context.Forms
+                .FirstOrDefaultAsync(f => f.CreatorId == userId && f.TemplateId == templateId);
             return form!;
         }
         catch (Exception e)
@@ -69,6 +72,40 @@ public class FormService (ApplicationDbContext context)
         {
             form!.IsSubmitted = true;
             await context.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"{e.Message}");
+        }
+
+        return false;
+    }
+
+    public IEnumerable<Form>? FindFormsByUserId(string userId)
+    {
+        try
+        {
+            var forms = context.Forms
+                .Where(f => f.CreatorId == userId)
+                .AsNoTracking()
+                .Include(f => f.Template);
+            return forms;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"{e.Message}");
+        }
+
+        return [];
+    }
+
+    public bool DeleteForms(HashSet<Form> selectedForms)
+    {
+        try
+        {
+            context.Forms.RemoveRange(selectedForms);
+            context.SaveChanges();
             return true;
         }
         catch (Exception e)

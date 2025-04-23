@@ -18,6 +18,7 @@ public partial class Home : ComponentBase
     
     // Class Variable
     private ApplicationUser? _currentUser;
+    private Type _selectedComponent = typeof(TemplateList);
     
     protected override async Task OnInitializedAsync()
     {

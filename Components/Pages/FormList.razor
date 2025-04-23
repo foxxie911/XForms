@@ -1,0 +1,40 @@
+@using XForms.Data
+
+@if (!_forms!.Any())
+{
+    <MudText Align="Align.Center" GutterBottom="true">You have no forms yet</MudText>
+}
+else
+{
+    <MudDataGrid T="Form"
+                 Items="_forms"
+                 SortMode="SortMode.Multiple"
+                 @bind-SelectedItems="_selectedForms"
+                 @ref="_formDataGrid"
+                 MultiSelection="true"
+                 RowClick="NavigateToForm"
+                 Breakpoint="Breakpoint.Sm"
+                 Hover="true"
+                 Striped="true"
+                 Dense="true">
+        <ToolBarContent>
+            <MudText Typo="Typo.h5">Forms</MudText>
+            <MudSpacer/>
+            <MudButtonGroup OverrideStyles="false">
+                <MudButton StartIcon="@Icons.Material.Filled.Delete"
+                           Variant="Variant.Outlined"
+                           Color="Color.Error"
+                           OnClick="DeleteSelectedForms">
+                    Delete
+                </MudButton>
+            </MudButtonGroup>
+        </ToolBarContent>
+        <Columns>
+            <SelectColumn T="Form"/>
+            <PropertyColumn Property="t => t.Template!.Title"/>
+            <PropertyColumn Property="t => t.IsSubmitted" Title="Submitted"/>
+            <PropertyColumn Property="t => t.CreatedAt" Title="Created At"/>
+            <PropertyColumn Property="t => t.UpdatedAt" Title="Updated At"/>
+        </Columns>
+    </MudDataGrid>
+}
