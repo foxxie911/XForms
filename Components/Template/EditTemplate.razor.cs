@@ -17,12 +17,11 @@ public partial class EditTemplate : ComponentBase
     [Inject] private TemplateService? TemplateService { get; set; }
     [Inject] private Cloudinary? Cloudinary { get; set; }
     [Inject] private ISnackbar? Snackbar { get; set; }
-    [Inject] private QuestionService? QuestionService { get; set; }
 
     // Global Class Variable
     private Data.Template? _template;
-    private MudDropContainer<Question>? _dragDropContainer;
     private string? _coverImagePublicId;
+    private Type _selectedOption = typeof(EditQuestions);
 
     protected override async Task OnInitializedAsync()
     {
@@ -39,47 +38,20 @@ public partial class EditTemplate : ComponentBase
     private async Task PublishTemplatePublic()
     {
         var success = await TemplateService!.MakePublicAsync(_template);
-        if (success) Snackbar!.Add("Template  published successfully", Severity.Success);
-        if (!success) Snackbar!.Add("Template publish failed", Severity.Error);
+        if (success) 
+            Snackbar!.Add("Template  published successfully", Severity.Success);
+        if (!success) 
+            Snackbar!.Add("Template publish failed", Severity.Error);
     }
-
-    // Question Section Start
-    private void CreateQuestion()
-    {
-        Snackbar!.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
-        _ = QuestionService!.CreateQuestion(Id);
-        Snackbar.Add("Question created", Severity.Success);
-        _dragDropContainer?.Refresh();
-        StateHasChanged();
-    }
-
-    private async Task DeleteQuestion(Question question)
-    {
-        Snackbar!.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
-        await QuestionService!.DeleteQuestion(question);
-        Snackbar!.Add("Question Deleted", Severity.Success);
-        _dragDropContainer?.Refresh();
-    }
-
-    private void ReorderQuestions(MudItemDropInfo<Question> droppedItem)
-    {
-        var droppedQuestion = droppedItem.Item;
-        var dropIndex = droppedItem.IndexInZone;
-        _ = QuestionService!.RearrangeQuestionUponDrag(droppedQuestion!, dropIndex);
-        StateHasChanged();
-    }
-    // Question Section End
-
+    
     // Photo Section Start
     private async Task UploadCoverPhoto(IBrowserFile? coverImageFile)
     {
         const int maxFileSize = 2 * 1024 * 1024;
         if (coverImageFile is null)
             Snackbar!.Add("No file selected", Severity.Info);
-
         if (coverImageFile!.Size > maxFileSize)
             Snackbar!.Add("File too large. Max file size is 2MB", Severity.Error);
-
         try
         {
             _coverImagePublicId = $"coverImage/{coverImageFile.Name}";

@@ -98,41 +98,27 @@ else
                 <MudChip T="string" Color="Color.Error" Icons="@Icons.Material.Filled.PublicOff" Text="Not Published"/>
             }
         </MudPaper>
-        @if (!_template.IsPublic)
-        {
-            <MudPaper Class="d-flex justify-end my-2" Elevation="0">
+
+        <MudPaper Class="d-flex justify-end my-2" Elevation="0">
+            @if (!_template.IsPublic)
+            {
                 <MudButton StartIcon="@Icons.Material.Filled.Publish"
                            Color="Color.Primary"
                            Variant="Variant.Filled"
                            OnClick="PublishTemplatePublic">
                     Publish
                 </MudButton>
-            </MudPaper>
-        }
-        <MudDropContainer
-            T="Question"
-            Items="@_template.Questions.OrderBy(q => q.Order)"
-            ItemDropped="@ReorderQuestions"
-            ItemsSelector="@((_, _) => true)"
-            @ref="_dragDropContainer">
-            <ChildContent>
-                <MudPaper Class="pa-2">
-                    <MudText Typo="Typo.h4" Class="ma-4">Questions</MudText>
-                    <MudDropZone T="Question" AllowReorder="true" Class="flex flex-wrap"/>
-                </MudPaper>
-            </ChildContent>
-            <ItemRenderer>
-                <QuestionBody Question="@context" QuestionDeleted="@DeleteQuestion"/>
-            </ItemRenderer>
-        </MudDropContainer>
-        <MudButton
-            Variant="Variant.Filled"
-            Color="Color.Surface"
-            OnClick="CreateQuestion"
-            StartIcon="@Icons.Material.Filled.Add"
-            IconSize="Size.Large"
-            Style="height: 50px; width: 100%"
-            Class="mt-4"/>
+            }
+        </MudPaper>
+
+        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-4">
+            <MudTabPanel Text="Questions">
+                <EditQuestions Template="_template"/>
+            </MudTabPanel>
+            <MudTabPanel Text="Responses">
+                <ResponseList TemplateId="_template.Id"/>
+            </MudTabPanel>
+        </MudTabs>
 
         @*Template Configuration end*@
     </MudContainer>

@@ -132,4 +132,22 @@ public class FormService(ApplicationDbContext context)
 
         return false;
     }
+
+    public IEnumerable<Form> FindFormsByTemplateId(int templateId)
+    {
+        try
+        {
+            var forms = context.Forms
+                .Where(f => f.TemplateId == templateId && f.IsSubmitted == true)
+                .Include(f => f.Creator)
+                .AsNoTracking();
+            return forms;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"{e.Message}");
+        }
+
+        return [];
+    }
 }
