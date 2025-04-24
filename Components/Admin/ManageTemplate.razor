@@ -1,0 +1,50 @@
+@page "/Admin/ManageTemplate/"
+@using Microsoft.AspNetCore.Authorization
+@using XForms.Data
+@attribute [Authorize(Roles="Admin")]
+
+@if (!_templates!.Any())
+{
+    <MudText Align="Align.Center" GutterBottom="true">No templates yet</MudText>
+}
+else
+{
+    <MudDataGrid T="Template"
+                 Items="_templates"
+                 SortMode="SortMode.Multiple"
+                 @bind-SelectedItems="_selectedTemplates"
+                 @ref="_templateDataGrid"
+                 MultiSelection="true"
+                 Filterable="true"
+                 FilterMode="DataGridFilterMode.Simple"
+                 FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive"
+                 RowClick="NavigateToTemplate"
+                 Breakpoint="Breakpoint.Sm"
+                 Hover="true"
+                 Striped="true"
+                 Dense="true">
+        <ToolBarContent>
+            <MudText Typo="Typo.h5">Templates</MudText>
+            <MudSpacer/>
+            <MudButtonGroup OverrideStyles="false">
+                <MudButton
+                    StartIcon="@Icons.Material.Filled.Delete"
+                    Variant="Variant.Outlined"
+                    Color="Color.Error"
+                    OnClick="DeleteSelectedTemplates">Delete
+                </MudButton>
+            </MudButtonGroup>
+        </ToolBarContent>
+        <Columns>
+            <SelectColumn T="Template"/>
+            <PropertyColumn Property="t => t.Title"/>
+            <PropertyColumn Property="t => t.Creator.DisplayName" Title="Creator"/>
+            <PropertyColumn Property="t => t.IsPublic" Title="Published"/>
+            <PropertyColumn Property="t => t.CreatedAt" Title="Created At"/>
+            <PropertyColumn Property="t => t.UpdatedAt" Title="Updated At"/>
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager T="Template"/>
+        </PagerContent>
+    </MudDataGrid>
+}

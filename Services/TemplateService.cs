@@ -54,16 +54,22 @@ public class TemplateService(ApplicationDbContext context)
     {
         return await context.Templates
             .Include(q => q.Questions)
-            .Include(u => u.Creator)
             .FirstOrDefaultAsync(t => t.Id == id);
     }
 
-    public async Task<IEnumerable<Template>> GetAllTemplatesAsync()
+    public IEnumerable<Template> GetAllTemplates()
     {
-        return await context.Templates
-            .Include(q => q.Questions)
-            .Include(u => u.Creator)
-            .ToListAsync();
+        try
+        {
+            var templates = context.Templates
+                .Include(u => u.Creator);
+            return templates;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"{e.Message}");
+        }
+        return [];
     }
 
     public IEnumerable<Template> GetTemplatesByUserId(string userId)
