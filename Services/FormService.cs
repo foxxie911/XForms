@@ -100,6 +100,23 @@ public class FormService(ApplicationDbContext context)
         return [];
     }
 
+    public IEnumerable<Form>? ListAllForms()
+    {
+        try
+        {
+            var forms = context.Forms
+                .AsNoTracking()
+                .Include(f => f.Template);
+            return forms;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"{e.Message}");
+        }
+
+        return [];
+    }
+
     public bool DeleteForms(HashSet<Form> selectedForms)
     {
         try

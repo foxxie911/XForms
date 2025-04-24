@@ -97,39 +97,34 @@ else
             {
                 <MudChip T="string" Color="Color.Error" Icons="@Icons.Material.Filled.PublicOff" Text="Not Published"/>
             }
-            
         </MudPaper>
-        <MudPaper Class="d-flex justify-end my-2" Elevation="0">
-            <MudButton StartIcon="@Icons.Material.Filled.Publish"
-                       Color="Color.Primary"
-                       Variant="Variant.Filled"
-                       OnClick="PublishTemplatePublic">
-                Publish
-            </MudButton>
-        </MudPaper>
-        @if (!_template.Questions.Any())
+        @if (!_template.IsPublic)
         {
-            <MudProgressCircular/>
+            <MudPaper Class="d-flex justify-end my-2" Elevation="0">
+                <MudButton StartIcon="@Icons.Material.Filled.Publish"
+                           Color="Color.Primary"
+                           Variant="Variant.Filled"
+                           OnClick="PublishTemplatePublic">
+                    Publish
+                </MudButton>
+            </MudPaper>
         }
-        else
-        {
-            <MudDropContainer
-                T="Question"
-                Items="@_template.Questions.OrderBy(q => q.Order)"
-                ItemDropped="@ReorderQuestions"
-                ItemsSelector="@((_, _) => true)"
-                @ref="_dragDropContainer">
-                <ChildContent>
-                    <MudPaper Class="pa-2">
-                        <MudText Typo="Typo.h4" Class="ma-4">Questions</MudText>
-                        <MudDropZone T="Question" AllowReorder="true" Class="flex flex-wrap"/>
-                    </MudPaper>
-                </ChildContent>
-                <ItemRenderer>
-                    <QuestionBody Question="@context" QuestionDeleted="@DeleteQuestion"/>
-                </ItemRenderer>
-            </MudDropContainer>
-        }
+        <MudDropContainer
+            T="Question"
+            Items="@_template.Questions.OrderBy(q => q.Order)"
+            ItemDropped="@ReorderQuestions"
+            ItemsSelector="@((_, _) => true)"
+            @ref="_dragDropContainer">
+            <ChildContent>
+                <MudPaper Class="pa-2">
+                    <MudText Typo="Typo.h4" Class="ma-4">Questions</MudText>
+                    <MudDropZone T="Question" AllowReorder="true" Class="flex flex-wrap"/>
+                </MudPaper>
+            </ChildContent>
+            <ItemRenderer>
+                <QuestionBody Question="@context" QuestionDeleted="@DeleteQuestion"/>
+            </ItemRenderer>
+        </MudDropContainer>
         <MudButton
             Variant="Variant.Filled"
             Color="Color.Surface"
