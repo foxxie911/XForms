@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using XForms.Data;
 
 namespace XForms.Services;
@@ -41,5 +42,23 @@ public class AnswerService(ApplicationDbContext context)
         }
 
         return false;
+    }
+
+    public IEnumerable<Answer> GetAnswersByQuestions(IEnumerable<int> questionIds)
+    {
+        try
+        {
+            var answers = context.Answers
+                .Where(a => questionIds.Contains(a.QuestionId))
+                .Include(a => a.Question)
+                .Include(a => a.Form.Creator)
+                .AsNoTracking();
+            return answers;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        return [];
     }
 }

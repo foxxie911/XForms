@@ -36,10 +36,11 @@ public class QuestionService(ApplicationDbContext context)
                 .Where(q => q.Order <= dropIndex && q.Order >= droppedQuestion.Order && q.Id != droppedQuestion.Id)
                 .ForEachAsync(q => q.Order -= 1);
         }
+
         droppedQuestion.Order = dropIndex;
         await context.SaveChangesAsync();
     }
-    
+
     public async Task UpdateQuestion()
     {
         await context.SaveChangesAsync();
