@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using XForms.Data;
 
@@ -22,7 +23,6 @@ public class QuestionService(ApplicationDbContext context)
 
     public async Task RearrangeQuestionUponDrag(Question droppedQuestion, int dropIndex)
     {
-        
         if (droppedQuestion.Order > dropIndex)
         {
             await context.Questions
@@ -53,5 +53,21 @@ public class QuestionService(ApplicationDbContext context)
             .ForEachAsync(q => q.Order -= 1);
         context.Questions.Remove(question);
         await context.SaveChangesAsync();
+    }
+
+    public IEnumerable<Question> GetTemplateQuestionById(int templateId)
+    {
+        try
+        {
+            var questions = context.Questions
+                .Where(q => q.TemplateId == templateId)
+                .AsNoTracking();
+            return questions;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"{e.Message}");
+        }
+        return [];
     }
 }

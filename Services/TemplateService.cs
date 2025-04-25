@@ -50,11 +50,11 @@ public class TemplateService(ApplicationDbContext context)
         context.SaveChanges();
     }
 
-    public async Task<Template?> GetTemplateAsync(int id)
+    public Template? GetTemplate(int id)
     {
-        return await context.Templates
+        return context.Templates
             .Include(q => q.Questions)
-            .FirstOrDefaultAsync(t => t.Id == id);
+            .FirstOrDefault(t => t.Id == id);
     }
 
     public IEnumerable<Template> GetAllTemplates()

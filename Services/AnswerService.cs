@@ -28,7 +28,7 @@ public class AnswerService(ApplicationDbContext context)
         return null!;
     }
 
-    public async Task<bool> UpdateAnswerAsync(Answer? answer)
+    public bool UpdateAnswer(Answer? answer)
     {
         try
         {

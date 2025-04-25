@@ -23,10 +23,10 @@ public partial class EditTemplate : ComponentBase
     private string? _coverImagePublicId;
     private Type _selectedOption = typeof(EditQuestions);
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await base.OnInitializedAsync();
-        _template = await TemplateService!.GetTemplateAsync(Id);
+        base.OnInitialized();
+        _template = TemplateService!.GetTemplate(Id);
     }
 
     // Template Section Start

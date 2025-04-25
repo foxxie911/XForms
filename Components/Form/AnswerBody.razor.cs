@@ -30,8 +30,8 @@ public partial class AnswerBody : ComponentBase
         if (_answer is null) Snackbar!.Add($"Answer creation failed for Question: {Question.Title}", Severity.Error);
     }
 
-    private async Task UpdateAnswer()
+    private void UpdateAnswer()
     {
-        _ = await AnswerService!.UpdateAnswerAsync(_answer);
+        _ = AnswerService!.UpdateAnswer(_answer);
     }
 }
