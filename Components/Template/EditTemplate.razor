@@ -1,11 +1,12 @@
 @page "/template/edit/{Id:int}"
 @using Microsoft.AspNetCore.Authorization
-@using XForms.Data
 @attribute [Authorize]
 
 @if (_template is null)
 {
-    <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
+    <div class="d-flex justify-center mt-4">
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
+    </div>
 }
 else
 {
@@ -99,7 +100,24 @@ else
             }
         </MudPaper>
 
-        <MudPaper Class="d-flex justify-end my-2" Elevation="0">
+        <MudPaper Class="d-flex my-2" Elevation="0">
+            @if (_isLiked)
+            {
+                <MudButton StartIcon="@Icons.Material.Filled.ThumbUp"
+                           Color="Color.Primary"
+                           OnClick="LikeOrUnlikeTemplate">
+                    @_totalLikesCount
+                </MudButton>
+            }
+            @if (!_isLiked)
+            {
+                <MudButton StartIcon="@Icons.Material.Filled.ThumbUp"
+                           Color="Color.Default"
+                           OnClick="LikeOrUnlikeTemplate">
+                    @_totalLikesCount
+                </MudButton>
+            }
+            <MudSpacer/>
             @if (!_template.IsPublic)
             {
                 <MudButton StartIcon="@Icons.Material.Filled.Publish"

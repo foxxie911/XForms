@@ -11,6 +11,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Form> Forms { get; set; }
     public DbSet<Answer> Answers { get; set; }
     public DbSet<Comment> Comments { get; set; }
+    public DbSet<Like> Likes { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -21,5 +22,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         builder.ApplyConfiguration(new FormConfiguration());
         builder.ApplyConfiguration(new AnswerConfiguration());
         builder.ApplyConfiguration(new CommentConfiguration());
+        builder.ApplyConfiguration(new LikeConfiguration());
     }
 }

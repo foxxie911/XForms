@@ -48,6 +48,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<AnswerService>();
     builder.Services.AddScoped<CommentService>();
     builder.Services.AddScoped<CommentSignalRService>();
+    builder.Services.AddScoped<LikeService>();
 
     builder.Services.AddIdentityCore<ApplicationUser>(options => { options.SignIn.RequireConfirmedAccount = false; })
         .AddRoles<IdentityRole>()

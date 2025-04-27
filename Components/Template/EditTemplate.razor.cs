@@ -1,7 +1,9 @@
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Identity;
 using MudBlazor;
 using XForms.Data;
 using XForms.Services;
@@ -15,17 +17,28 @@ public partial class EditTemplate : ComponentBase
 
     // Dependency Injection
     [Inject] private TemplateService? TemplateService { get; set; }
+    [Inject] private AuthenticationStateProvider? AuthenticationStateProvider { get; set; }
+    [Inject] private UserManager<ApplicationUser>? UserManager { get; set; }
+    [Inject] private LikeService? LikeService { get; set; }
     [Inject] private Cloudinary? Cloudinary { get; set; }
     [Inject] private ISnackbar? Snackbar { get; set; }
 
     // Global Class Variable
+    private ApplicationUser? _currentUser;
     private Data.Template? _template;
     private string? _coverImagePublicId;
+    private int _totalLikesCount;
+    private bool _isLiked;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _template = await TemplateService!.GetTemplate(Id);
+        var authState = await AuthenticationStateProvider!.GetAuthenticationStateAsync();
+        _currentUser = await UserManager!.GetUserAsync(authState.User);
+        _template = await TemplateService!.GetTemplate(Id); 
+        await Task.Delay(500);
+        _totalLikesCount = await LikeService!.CountLikeByTemplateIdAsync(_template.Id);
+        _isLiked = await LikeService!.IsLikedAsync(_currentUser!.Id, _template.Id);
     }
 
     // Template Section Start
@@ -41,6 +54,14 @@ public partial class EditTemplate : ComponentBase
             Snackbar!.Add("Template  published successfully", Severity.Success);
         if (!success) 
             Snackbar!.Add("Template publish failed", Severity.Error);
+    }
+    
+    private async Task LikeOrUnlikeTemplate()
+    {
+        await LikeService!.LikeOrUnlikeTemplate(_currentUser!.Id, _template!.Id);
+        _totalLikesCount = await LikeService!.CountLikeByTemplateIdAsync(_template.Id);
+        _isLiked = await LikeService!.IsLikedAsync(_currentUser!.Id, _template.Id);
+        StateHasChanged();
     }
     
     // Photo Section Start

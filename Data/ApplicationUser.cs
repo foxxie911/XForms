@@ -17,4 +17,5 @@ public class ApplicationUser : IdentityUser
     public virtual ICollection<Template> Templates { get; set; }
     public virtual ICollection<Form> Forms { get; set; }
     public virtual ICollection<Comment> Comments { get; set; }
+    public virtual ICollection<Like> Likes { get; set; }
 }

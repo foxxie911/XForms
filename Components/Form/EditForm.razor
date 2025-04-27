@@ -2,7 +2,9 @@
 
 @if (_form is null)
 {
-    <MudProgressCircular Color="Color.Primary" Indeterminate="true" Class="d-flex justify-center my-2"/>
+    <div class="d-flex justify-center mt-4">
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" Class="d-flex justify-center my-2"/>
+    </div>
 }
 else
 {
@@ -19,7 +21,24 @@ else
                       Class="rounded-lg pt-2"/>
         }
 
-        <MudPaper Elevation="0" Class="d-flex justify-end my-2">
+        <MudPaper Elevation="0" Class="d-flex my-2">
+            @if (_isLiked)
+            {
+                <MudButton StartIcon="@Icons.Material.Filled.ThumbUp"
+                           Color="Color.Primary"
+                           OnClick="LikeOrUnlikeForm">
+                    @_totalLikesCount
+                </MudButton>
+            }
+            @if (!_isLiked)
+            {
+                <MudButton StartIcon="@Icons.Material.Filled.ThumbUp"
+                           Color="Color.Default"
+                           OnClick="LikeOrUnlikeForm">
+                    @_totalLikesCount
+                </MudButton>
+            }
+            <MudSpacer/>
             @if (_form.IsSubmitted)
             {
                 <MudButton Variant="Variant.Filled"
