@@ -1,0 +1,65 @@
+@using System.Globalization
+@using Microsoft.AspNetCore.Components.Rendering
+@using XForms.Services.SignalR
+
+@inject CommentSignalRService CommentSignalRService
+
+<MudText Typo="Typo.h5">Comments</MudText>
+<MudDivider Class="mb-4"/>
+@if (_comments!.Any())
+{
+   foreach (var comment in _comments!)
+   {
+      <MudChat ChatPosition="ChatBubblePosition.Start">
+         @if (@comment.Creator!.AvatarUrl is null)
+         {
+            <MudAvatar>@comment.Creator!.DisplayName.First()</MudAvatar>
+         }
+         else
+         {
+            <MudAvatar>
+               <MudImage Src="@comment.Creator.AvatarUrl"/>
+            </MudAvatar>
+         }
+         @if (@comment.CreatorId == _currentUser!.Id)
+         {
+            <MudChatHeader Name="You"
+                           Time="@comment.CreatedAt.ToString(CultureInfo.CurrentCulture)"/>
+         }
+         else
+         {
+            <MudChatHeader Name="@comment.Creator.DisplayName"
+                           Time="@comment.CreatedAt.ToString(CultureInfo.CurrentCulture)"/>
+         }
+         @if (@comment.CreatorId == _currentUser!.Id)
+         {
+            <MudChatBubble OnContextClick="(MouseEventArgs args) => OpenControlPanel(args, comment)">
+               @comment.Message
+            </MudChatBubble>
+         }
+         else
+         {
+            <MudChatBubble>
+               @comment.Message
+            </MudChatBubble>
+         }
+      </MudChat>
+   }
+}
+else
+{
+   <MudText Align="Align.Center" Class="mt-4">No Comments yet</MudText>
+}
+<MudDivider/>
+<MudTextField T="string"
+              @bind-Value="_commentMessage"
+              Adornment="Adornment.End"
+              AdornmentIcon="@Icons.Material.Filled.PostAdd"
+              OnAdornmentClick="PostComment"/>
+<MudMenu PositionAtCursor="true"
+         @ref="_commentControlPanel">
+   <MudMenuItem Icon="@Icons.Material.Filled.Delete"
+                OnClick="@DeleteComment">
+      Delete Comment
+   </MudMenuItem>
+</MudMenu>

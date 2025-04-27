@@ -2,6 +2,7 @@ using CloudinaryDotNet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor;
 using MudBlazor.Services;
@@ -9,8 +10,10 @@ using XForms.Authorization;
 using XForms.Components;
 using XForms.Components.Account;
 using XForms.Data;
+using XForms.Hubs;
 using XForms.Seeder;
 using XForms.Services;
+using XForms.Services.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -43,6 +46,8 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<SearchService>();
     builder.Services.AddScoped<FormService>();
     builder.Services.AddScoped<AnswerService>();
+    builder.Services.AddScoped<CommentService>();
+    builder.Services.AddScoped<CommentSignalRService>();
 
     builder.Services.AddIdentityCore<ApplicationUser>(options => { options.SignIn.RequireConfirmedAccount = false; })
         .AddRoles<IdentityRole>()
@@ -74,6 +79,13 @@ var builder = WebApplication.CreateBuilder(args);
     };
     builder.Services.AddSingleton(cloudinary);
 
+    builder.Services.AddSignalR();
+    builder.Services.AddResponseCompression(opts =>
+    {
+        opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+            ["application/octet-stream"]);
+    });
+
     builder.Services.AddRazorPages();
     builder.Services.AddServerSideBlazor();
     builder.Services.AddControllers();
@@ -81,6 +93,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
 {
+    app.UseResponseCompression();
+
     if (app.Environment.IsDevelopment())
     {
         app.UseMigrationsEndPoint();
@@ -109,5 +123,8 @@ var app = builder.Build();
     app.MapRazorComponents<App>()
         .AddInteractiveServerRenderMode();
     app.MapAdditionalIdentityEndpoints();
+
+    app.MapHub<CommentHub>("/commentHub");
+
     app.Run();
 }

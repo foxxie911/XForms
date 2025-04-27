@@ -10,6 +10,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Question> Questions { get; set; }
     public DbSet<Form> Forms { get; set; }
     public DbSet<Answer> Answers { get; set; }
+    public DbSet<Comment> Comments { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -19,5 +20,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         builder.ApplyConfiguration(new QuestionConfiguration());
         builder.ApplyConfiguration(new FormConfiguration());
         builder.ApplyConfiguration(new AnswerConfiguration());
+        builder.ApplyConfiguration(new CommentConfiguration());
     }
 }
