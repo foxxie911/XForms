@@ -32,7 +32,18 @@ else
         <Columns>
             <SelectColumn T="Template"/>
             <PropertyColumn Property="t => t.Title"/>
-            <PropertyColumn Property="t => t.IsPublic" Title="Published"/>
+            <TemplateColumn Title="Published">
+                <CellTemplate>
+                    @if (context.Item.IsPublic)
+                    {
+                        <MudText>Yes</MudText>
+                    }
+                    @if (!context.Item.IsPublic)
+                    {
+                        <MudText>No</MudText>
+                    }
+                </CellTemplate>
+            </TemplateColumn>
             <PropertyColumn Property="t => t.CreatedAt" Title="Created At"/>
             <PropertyColumn Property="t => t.UpdatedAt" Title="Updated At"/>
         </Columns>

@@ -32,7 +32,18 @@ else
         <Columns>
             <SelectColumn T="Form"/>
             <PropertyColumn Property="t => t.Template!.Title"/>
-            <PropertyColumn Property="t => t.IsSubmitted" Title="Submitted"/>
+            <TemplateColumn Title="Submitted">
+                <CellTemplate>
+                    @if (context.Item.IsSubmitted)
+                    {
+                        <MudText>Yes</MudText>
+                    }
+                    @if (!context.Item.IsSubmitted)
+                    {
+                        <MudText>No</MudText>
+                    }
+                </CellTemplate>
+            </TemplateColumn>
             <PropertyColumn Property="t => t.CreatedAt" Title="Created At"/>
             <PropertyColumn Property="t => t.UpdatedAt" Title="Updated At"/>
         </Columns>

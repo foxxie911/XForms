@@ -21,12 +21,11 @@ public partial class EditTemplate : ComponentBase
     // Global Class Variable
     private Data.Template? _template;
     private string? _coverImagePublicId;
-    private Type _selectedOption = typeof(EditQuestions);
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
-        _template = TemplateService!.GetTemplate(Id);
+        await base.OnInitializedAsync();
+        _template = await TemplateService!.GetTemplate(Id);
     }
 
     // Template Section Start
