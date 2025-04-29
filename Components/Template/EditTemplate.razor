@@ -15,7 +15,12 @@ else
         @*Cover photo configuration start*@
         @if (_template.ImageUrl is null)
         {
-            <MudPaper Height="100px" Class="mud-theme-primary rounded-lg mt-2"/>
+            <MudImage Src="default_cover.jpg"
+                      Width="912"
+                      Height="250"
+                      ObjectFit="ObjectFit.Contain"
+                      Fluid="true"
+                      Class="rounded-lg pt-2"/>
         }
         else
         {
@@ -25,7 +30,7 @@ else
                       Class="rounded-lg pt-2"/>
         }
         <div class="d-flex">
-            @if (_coverImagePublicId is not null)
+            @if (_template.ImageUrl is not null)
             {
                 <MudFileUpload
                     T="IBrowserFile"

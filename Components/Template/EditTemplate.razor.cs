@@ -26,7 +26,6 @@ public partial class EditTemplate : ComponentBase
     // Global Class Variable
     private ApplicationUser? _currentUser;
     private Data.Template? _template;
-    private string? _coverImagePublicId;
     private int _totalLikesCount;
     private bool _isLiked;
 
@@ -68,13 +67,13 @@ public partial class EditTemplate : ComponentBase
     private async Task UploadCoverPhoto(IBrowserFile? coverImageFile)
     {
         const int maxFileSize = 2 * 1024 * 1024;
+        Snackbar!.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
         if (coverImageFile is null)
             Snackbar!.Add("No file selected", Severity.Info);
         if (coverImageFile!.Size > maxFileSize)
             Snackbar!.Add("File too large. Max file size is 2MB", Severity.Error);
         try
         {
-            _coverImagePublicId = $"coverImage/{coverImageFile.Name}";
             var uploadParams = new ImageUploadParams()
             {
                 File = new FileDescription
@@ -103,11 +102,10 @@ public partial class EditTemplate : ComponentBase
 
     private async Task RemoveCoverPhoto()
     {
-        var deleteParam = new DeletionParams(_coverImagePublicId);
+        var deleteParam = new DeletionParams(_template!.ImageUrl);
         var result = await Cloudinary!.DestroyAsync(deleteParam);
         if (result.Error is not null)
             Snackbar!.Add($"{result.Error.Message}", Severity.Error);
-        _coverImagePublicId = null;
         _template!.ImageUrl = null!;
         StateHasChanged();
     }
