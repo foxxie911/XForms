@@ -26,5 +26,7 @@ public class TemplateEditorHandler : AuthorizationHandler<TemplateEditorRequirem
             context.Succeed(requirement);
         }
         return Task.CompletedTask;
+        
+        // TODO: Implement this to the template edit control
     }
 }

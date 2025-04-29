@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using XForms.Data;
@@ -11,9 +12,11 @@ using XForms.Data;
 namespace XForms.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250429083307_TemplateTagRevert")]
+    partial class TemplateTagRevert
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -407,8 +410,8 @@ namespace XForms.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("character varying(25)");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("Id");
 
@@ -635,17 +638,21 @@ namespace XForms.Migrations
 
             modelBuilder.Entity("XForms.Data.TemplateTag", b =>
                 {
-                    b.HasOne("XForms.Data.Tag", null)
-                        .WithMany()
+                    b.HasOne("XForms.Data.Tag", "Tag")
+                        .WithMany("TemplateTags")
                         .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("XForms.Data.Template", null)
-                        .WithMany()
+                    b.HasOne("XForms.Data.Template", "Template")
+                        .WithMany("TemplateTags")
                         .HasForeignKey("TemplateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Tag");
+
+                    b.Navigation("Template");
                 });
 
             modelBuilder.Entity("XForms.Data.ApplicationUser", b =>
@@ -664,6 +671,11 @@ namespace XForms.Migrations
                     b.Navigation("Answers");
                 });
 
+            modelBuilder.Entity("XForms.Data.Tag", b =>
+                {
+                    b.Navigation("TemplateTags");
+                });
+
             modelBuilder.Entity("XForms.Data.Template", b =>
                 {
                     b.Navigation("Comments");
@@ -673,6 +685,8 @@ namespace XForms.Migrations
                     b.Navigation("Likes");
 
                     b.Navigation("Questions");
+
+                    b.Navigation("TemplateTags");
                 });
 #pragma warning restore 612, 618
         }

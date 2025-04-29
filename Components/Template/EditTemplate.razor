@@ -90,6 +90,7 @@ else
             </MudGrid>
         </MudPaper>
         <MudPaper Width="100%" Class="rounded-lg pa-4 my-2">
+            <TagBox TemplateId="Id"/>
             @if (_template.IsPublic)
             {
                 <MudChip T="string" Color="Color.Success" Icon="@Icons.Material.Filled.Public" Text="Published"/>

@@ -1,0 +1,48 @@
+<MudPaper MaxWidth="100%" Class="pa-4">
+   <MudText Typo="Typo.h5" GutterBottom="true">Tag Cloud</MudText>
+   @if (!_tags!.Any())
+   {
+      <MudPaper Elevation="0" Class="d-flex justify-center pt-4">
+         <MudProgressCircular Indeterminate="true" Color="Color.Primary"/>
+      </MudPaper>
+   }
+   else
+   {
+      <MudPaper Elevation="0" Width="100%" Class="d-inline-block">
+         @foreach (var tag in _tags!)
+         {
+            <MudChip T="string"
+                     Value="@(tag.Name + " " + tag.Templates!.Count(t => t.IsPublic))"
+                     Color="Color.Default"
+                     OnClick="() => ShowTemplates(tag.Name)"
+                     Variant="Variant.Outlined"
+            />
+         }
+      </MudPaper>
+      <MudPaper Elevation="0" Class="d-flex overflow-auto my-2 pa-2 gap-4">
+         @foreach (var template in _templates!)
+         {
+            <MudCard Style="min-width: 200px; max-width: 200px">
+               @if (template.ImageUrl is null)
+               {
+                  <MudCardMedia Image="default_bg.jpg" Height="200"/>
+               }
+               else
+               {
+                  <MudCardMedia Image="@template.ImageUrl" Height="200"/>
+               }
+               <MudCardContent>
+                  <MudText Typo="Typo.body1">@template.Title</MudText>
+               </MudCardContent>
+               <MudCardActions>
+                  <MudButton Variant="Variant.Text"
+                             Color="Color.Primary"
+                             OnClick="() => CreateForm(template)">
+                     Fill Form
+                  </MudButton>
+               </MudCardActions>
+            </MudCard>
+         }
+      </MudPaper>
+   }
+</MudPaper>

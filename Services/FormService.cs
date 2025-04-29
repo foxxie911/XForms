@@ -7,7 +7,7 @@ namespace XForms.Services;
 
 public class FormService(ApplicationDbContext context)
 {
-    public async Task<int> CreateForm(string userId, int templateId)
+    public int CreateForm(string userId, int templateId)
     {
         try
         {
@@ -19,7 +19,7 @@ public class FormService(ApplicationDbContext context)
                 UpdatedAt = DateTime.UtcNow,
                 Version = Guid.NewGuid()
             });
-            await context.SaveChangesAsync();
+            context.SaveChanges();
             return form.Entity.Id;
         }
         catch (Exception e)
@@ -50,12 +50,12 @@ public class FormService(ApplicationDbContext context)
         return null!;
     }
 
-    public async Task<Form> FindFormByUserAndTemplateId(string userId, int templateId)
+    public Form FindFormByUserAndTemplateId(string userId, int templateId)
     {
         try
         {
-            var form = await context.Forms
-                .FirstOrDefaultAsync(f => f.CreatorId == userId && f.TemplateId == templateId);
+            var form = context.Forms
+                .FirstOrDefault(f => f.CreatorId == userId && f.TemplateId == templateId);
             return form!;
         }
         catch (Exception e)

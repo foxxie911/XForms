@@ -36,13 +36,13 @@ public partial class MainLayout : LayoutComponentBase
         return templates;
     }
 
-    public async Task CreateForm(Data.Template? template)
+    public void CreateForm(Data.Template? template)
     {
         if (template == null) return;
-        var userForm = await FormService!.FindFormByUserAndTemplateId(_user!.Id, template.Id);
+        var userForm = FormService!.FindFormByUserAndTemplateId(_user!.Id, template.Id);
         if (userForm is null)
         { 
-            var formId = await FormService!.CreateForm(_user!.Id, template.Id);
+            var formId = FormService!.CreateForm(_user!.Id, template.Id);
             if (formId > -1)
             {
                 Snackbar!.Add("Form Successfully created", Severity.Success);
