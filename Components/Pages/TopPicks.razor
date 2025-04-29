@@ -1,0 +1,33 @@
+<MudPaper MaxHeight="100%" Class="pa-4" Elevation="0">
+    <MudText Typo="Typo.h5" GutterBottom="true">Top Picks</MudText>
+
+    <MudPaper Elevation="0" Class="d-flex overflow-auto my-2 pa-2 gap-4">
+        @if (!_templates.Any())
+        {
+            <MudText GutterBottom="true" Align="Align.Center">There no picks at this moment</MudText>
+        }
+        @foreach (var template in _templates!)
+        {
+            <MudCard Style="min-width: 200px; max-width: 200px">
+                @if (template.ImageUrl is null)
+                {
+                    <MudCardMedia Image="default_bg.jpg" Height="200"/>
+                }
+                else
+                {
+                    <MudCardMedia Image="@template.ImageUrl" Height="200"/>
+                }
+                <MudCardContent>
+                    <MudText Typo="Typo.body1">@template.Title</MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Text"
+                               Color="Color.Primary"
+                               OnClick="() => CreateForm(template)">
+                        Fill Form
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        }
+    </MudPaper>
+</MudPaper>

@@ -132,4 +132,23 @@ public class TemplateService(ApplicationDbContext context)
 
         return false;
     }
+
+    public IEnumerable<Template> GetTopTemplates(int count)
+    {
+        try
+        {
+            var result = context.Templates
+                .Where(t => t.IsPublic)
+                .Include(t => t.Likes)
+                .OrderByDescending(t => t.Likes.Count)
+                .Take(count);
+            return result;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"{e.Message}");
+        }
+
+        return [];
+    }
 }
