@@ -1,0 +1,31 @@
+<MudCard Style="min-width: 300px; max-width: 300px">
+    @if (ChosenTemplate.ImageUrl is null)
+    {
+        <MudCardMedia Image="default_bg.jpg" Height="200"/>
+    }
+    else
+    {
+        <MudCardMedia Image="@ChosenTemplate.ImageUrl" Height="200"/>
+    }
+    <MudCardContent>
+        <MudText>@ChosenTemplate.Title</MudText>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Variant="Variant.Text"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.RemoveRedEye"
+                   OnClick="ViewForm">
+            View
+        </MudButton>
+        <AuthorizeView>
+            <Authorized>
+                <MudButton Variant="Variant.Text"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.Edit"
+                           OnClick="() => CreateForm(ChosenTemplate)">
+                    Fill Form
+                </MudButton>
+            </Authorized>
+        </AuthorizeView>
+    </MudCardActions>
+</MudCard>

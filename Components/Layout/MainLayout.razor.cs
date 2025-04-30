@@ -22,12 +22,13 @@ public partial class MainLayout : LayoutComponentBase
     private ApplicationUser? _user;
     private bool _drawerOpen = true;
     private string _searchString = string.Empty;
+    private AuthenticationState? _authState;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        var authState = AuthenticationStateProvider!.GetAuthenticationStateAsync().Result;
-        _user = UserManager!.GetUserAsync(authState.User).Result;
+        _authState = AuthenticationStateProvider!.GetAuthenticationStateAsync().Result;
+        _user = UserManager!.GetUserAsync(_authState.User).Result;
     }
 
     private async Task<IEnumerable<Data.Template>> SearchTemplates(string? s, CancellationToken cancellationToken)
@@ -36,8 +37,12 @@ public partial class MainLayout : LayoutComponentBase
         return templates;
     }
 
-    public void CreateForm(Data.Template? template)
+    public void ManageSearchSelection(Data.Template? template)
     {
+        var user = _authState!.User;
+        if (user.Identity!.IsAuthenticated)
+            NavigationManager!.NavigateTo($"/form/view/{template?.Id}");
+        
         if (template == null) return;
 
         var userForm = FormService!.FindFormByUserAndTemplateId(_user!.Id, template.Id);
@@ -55,25 +60,12 @@ public partial class MainLayout : LayoutComponentBase
 
         Snackbar!.Add("Form Successfully created", Severity.Success);
         NavigationManager!.NavigateTo($"/form/edit/{formId}");
-        /*
-        if (template == null) return;
-        var userForm = FormService!.FindFormByUserAndTemplateId(_user!.Id, template.Id);
-        if (userForm is null)
-        {
-            var formId = FormService!.CreateForm(_user!.Id, template.Id);
-            if (formId > -1)
-            {
-                Snackbar!.Add("Form Successfully created", Severity.Success);
-                NavigationManager!.NavigateTo($"/form/edit/{formId}");
-            }
-            Snackbar!.Add("Form Creation Failed", Severity.Error);
-        }
-
-        if (userForm is not null)
-        {
-            NavigationManager!.NavigateTo("/form/edit/" + userForm.Id);
-        }
-
-    */
     }
+
+    /*
+    private void ViewForm(Data.Template? template)
+    {
+        NavigationManager!.NavigateTo($"/form/view/{template?.Id}");
+    }
+*/
 }

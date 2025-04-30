@@ -21,14 +21,13 @@
                 AdornmentColor="Color.Inherit"
                 @bind-text="_searchString"
                 ResetValueOnEmptyText="true"
-                ValueChanged="CreateForm"
+                ValueChanged="ManageSearchSelection"
                 Placeholder="Search"
                 ToStringFunc="@(template => template?.Title)"
                 SearchFunc="SearchTemplates"
                 Class="my-2"/>
         </MudPaper>
         <MudSpacer/>
-        @* <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End"/> *@
     </MudAppBar>
     <MudDrawer id="nav-drawer" @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <NavMenu/>

@@ -31,25 +31,4 @@ public partial class TagCloud : ComponentBase
     {
         _templates = TagService!.FindTemplatesByTag(tagName).OrderByDescending(t => t.Likes.Count);
     }
-
-    public void CreateForm(Data.Template? template)
-    {
-        if (template == null) return;
-
-        var userForm = FormService!.FindFormByUserAndTemplateId(CurrentUser!.Id, template.Id);
-
-        if (userForm is not null)
-        {
-            NavigationManager!.NavigateTo("/form/edit/" + userForm.Id);
-            return;
-        }
-
-        var formId = FormService!.CreateForm(CurrentUser!.Id, template.Id);
-
-        if (formId == int.MinValue)
-            Snackbar!.Add("Form Creation Failed", Severity.Error);
-
-        Snackbar!.Add("Form Successfully created", Severity.Success);
-        NavigationManager!.NavigateTo($"/form/edit/{formId}");
-    }
 }

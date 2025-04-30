@@ -24,27 +24,4 @@ public partial class TopPicks : ComponentBase
         base.OnInitialized();
         _templates = TemplateService!.GetTopTemplates(5);
     }
-
-    public void CreateForm(Data.Template? template)
-    {
-        if (template == null) return;
-
-        var userForm = FormService!.FindFormByUserAndTemplateId(CurrentUser!.Id, template.Id);
-
-        Task.Delay(100);
-
-        if (userForm is not null)
-        {
-            NavigationManager!.NavigateTo("/form/edit/" + userForm.Id);
-            return;
-        }
-
-        var formId = FormService!.CreateForm(CurrentUser!.Id, template.Id);
-
-        if (formId == int.MinValue)
-            Snackbar!.Add("Form Creation Failed", Severity.Error);
-
-        Snackbar!.Add("Form Successfully created", Severity.Success);
-        NavigationManager!.NavigateTo($"/form/edit/{formId}");
-    }
 }
