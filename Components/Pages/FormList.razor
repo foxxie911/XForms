@@ -7,10 +7,10 @@
 else
 {
     <MudDataGrid T="Form"
+                 @ref="_formDataGrid"
                  Items="_forms"
                  SortMode="SortMode.Multiple"
                  @bind-SelectedItems="_selectedForms"
-                 @ref="_formDataGrid"
                  MultiSelection="true"
                  RowClick="NavigateToForm"
                  Breakpoint="Breakpoint.Sm"

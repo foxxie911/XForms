@@ -34,19 +34,19 @@ public partial class FormList : ComponentBase
             return;
         }
 
-        var success = FormService!.DeleteForms(_selectedForms);
-
-        if (success)
-        {
-            _selectedForms.Clear();
-            _formDataGrid!.ReloadServerData();
-            Snackbar!.Add("Forms successfully deleted", Severity.Success);
-        }
+        var success = FormService!.DeleteFormsAsync(_selectedForms);
+        Task.Delay(50);
 
         if (!success)
         {
             Snackbar!.Add("Forms failed to delete", Severity.Error);
+            return;
         }
+
+        _selectedForms.Clear();
+        StateHasChanged();
+        _formDataGrid!.ReloadServerData();
+        Snackbar!.Add("Forms successfully deleted", Severity.Success);
     }
 
     private void NavigateToForm(DataGridRowClickEventArgs<Data.Form> args)

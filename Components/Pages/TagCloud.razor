@@ -19,6 +19,10 @@
             />
          }
       </MudPaper>
+      @if (!_templates!.Any())
+      {
+         <MudText Align="Align.Center">No templates yet</MudText>
+      }
       <MudPaper Elevation="0" Class="d-flex overflow-auto my-2 pa-2 gap-4">
          @foreach (var template in _templates!)
          {

@@ -18,22 +18,20 @@ public partial class Home : ComponentBase
     
     // Class Variable
     private ApplicationUser? _currentUser;
-    private Type _selectedComponent = typeof(TemplateList);
     
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
-        var authState = await AuthenticationStateProvider!.GetAuthenticationStateAsync();
-        _currentUser = await UserManager!.GetUserAsync(authState.User);
+        var authState = AuthenticationStateProvider!.GetAuthenticationStateAsync().Result;
+        _currentUser = UserManager!.GetUserAsync(authState.User).Result;
     }
 
-    private async Task NewTemplate()
+    private void NewTemplate()
     {
         if (_currentUser is null)
             Snackbar!.Add("No user logged in");
-        var templateId = await TemplateService!.CreateTemplate(_currentUser!.Id);
+        var templateId = TemplateService!.CreateTemplate(_currentUser!.Id);
         NavigationManager!.NavigateTo($"/template/edit/{templateId}");
     }
-    
 }

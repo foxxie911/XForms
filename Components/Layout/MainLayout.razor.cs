@@ -16,8 +16,8 @@ public partial class MainLayout : LayoutComponentBase
     [Inject] private ISnackbar? Snackbar { get; set; }
     [Inject] private NavigationManager? NavigationManager { get; set; }
     [Inject] private FormService? FormService { get; set; }
-    
-    
+
+
     // Class variables
     private ApplicationUser? _user;
     private bool _drawerOpen = true;
@@ -26,35 +26,54 @@ public partial class MainLayout : LayoutComponentBase
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        var authState = await AuthenticationStateProvider!.GetAuthenticationStateAsync();
-        _user = await UserManager!.GetUserAsync(authState.User);
+        var authState = AuthenticationStateProvider!.GetAuthenticationStateAsync().Result;
+        _user = UserManager!.GetUserAsync(authState.User).Result;
     }
 
-    public async Task<IEnumerable<Data.Template>> SearchTemplates(string? s, CancellationToken cancellationToken)
+    private async Task<IEnumerable<Data.Template>> SearchTemplates(string? s, CancellationToken cancellationToken)
     {
-        var  templates = await SearchService!.SearchTemplateByTitleAsync(_searchString);
+        var templates = await SearchService!.SearchTemplateByTitleAsync(_searchString);
         return templates;
     }
 
     public void CreateForm(Data.Template? template)
     {
         if (template == null) return;
+
+        var userForm = FormService!.FindFormByUserAndTemplateId(_user!.Id, template.Id);
+
+        if (userForm is not null)
+        {
+            NavigationManager!.NavigateTo("/form/edit/" + userForm.Id);
+            return;
+        }
+
+        var formId = FormService!.CreateForm(_user!.Id, template.Id);
+
+        if (formId == int.MinValue)
+            Snackbar!.Add("Form Creation Failed", Severity.Error);
+
+        Snackbar!.Add("Form Successfully created", Severity.Success);
+        NavigationManager!.NavigateTo($"/form/edit/{formId}");
+        /*
+        if (template == null) return;
         var userForm = FormService!.FindFormByUserAndTemplateId(_user!.Id, template.Id);
         if (userForm is null)
-        { 
+        {
             var formId = FormService!.CreateForm(_user!.Id, template.Id);
             if (formId > -1)
             {
                 Snackbar!.Add("Form Successfully created", Severity.Success);
-                NavigationManager!.NavigateTo($"/form/edit/{formId}", forceLoad: true);
+                NavigationManager!.NavigateTo($"/form/edit/{formId}");
             }
             Snackbar!.Add("Form Creation Failed", Severity.Error);
         }
 
         if (userForm is not null)
         {
-            NavigationManager!.NavigateTo("/form/edit/" + userForm.Id, forceLoad: true);
+            NavigationManager!.NavigateTo("/form/edit/" + userForm.Id);
         }
-        
+
+    */
     }
 }

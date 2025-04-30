@@ -5,49 +5,48 @@ namespace XForms.Services;
 
 public class TemplateService(ApplicationDbContext context)
 {
-    public async Task<int> CreateTemplate(string? userId)
+    public int CreateTemplate(string? userId)
     {
         if (userId is null)
             Console.WriteLine("User not authorized, template creation failed");
-        var template = new Template
+        try
         {
-            Title = "Untitled",
-            CreatorId = userId!,
-            ImageUrl = null,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow,
-            Version = Guid.NewGuid()
-        };
-        await context.Templates.AddAsync(template);
-        await context.SaveChangesAsync();
+            var template = context.Templates.Add(new Template()
+            {
+                Title = "Untitled",
+                CreatorId = userId!,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                Version = Guid.NewGuid()
+            });
+            context.SaveChanges();
+            return template.Entity.Id;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"{e.Message}");
+        }
 
-        return template.Id;
+        return -1;
     }
 
-    public async Task UpdateTemplate(Template? template)
+    public Task UpdateTemplate(Template? template)
     {
-        var dbTemplate = await context.Templates.FirstOrDefaultAsync(t => t.Id == template!.Id);
+        var dbTemplate = context.Templates.FirstOrDefault(t => t.Id == template!.Id);
         if (dbTemplate is null)
         {
             Console.WriteLine("Template not found");
-            return;
+            return Task.CompletedTask;
         }
 
         if (dbTemplate.Version != template!.Version)
         {
             Console.WriteLine($"Database entry updated for this template");
-            return;
+            return Task.CompletedTask;
         }
-
-        dbTemplate.Title = template.Title;
-        dbTemplate.Description = template.Description;
-        dbTemplate.ImageUrl = template.ImageUrl;
-        dbTemplate.IsPublic = template.IsPublic;
-        dbTemplate.UpdatedAt = DateTime.UtcNow;
-        dbTemplate.Version = Guid.NewGuid();
-
         // Don't make it async!!! Breaks application.
-        context.SaveChanges();
+        context.SaveChangesAsync();
+        return Task.CompletedTask;
     }
 
     public async Task<Template> GetTemplate(int id)
@@ -62,9 +61,9 @@ public class TemplateService(ApplicationDbContext context)
         }
         catch (Exception e)
         {
-           Console.WriteLine($"{e.Message}"); 
+            Console.WriteLine($"{e.Message}");
         }
-        
+
         return null!;
     }
 
@@ -80,6 +79,7 @@ public class TemplateService(ApplicationDbContext context)
         {
             Console.WriteLine($"{e.Message}");
         }
+
         return [];
     }
 

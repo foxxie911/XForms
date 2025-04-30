@@ -5,13 +5,13 @@ namespace XForms.Services;
 
 public class AnswerService(ApplicationDbContext context)
 {
-    public async Task<Answer> CreateOrShowAnswerAsync(int questionId, int formId)
+    public Answer CreateOrShowAnswer(int questionId, int formId)
     {
         var answer = context.Answers.FirstOrDefault(q => q.FormId == formId && q.QuestionId == questionId);
         if (answer is not null) return answer;
         try
         {
-            var answerEntity = await context.AddAsync(new Answer
+            var answerEntity = context.Add(new Answer()
             {
                 QuestionId = questionId,
                 FormId = formId,

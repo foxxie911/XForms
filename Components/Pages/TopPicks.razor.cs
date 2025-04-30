@@ -23,8 +23,6 @@ public partial class TopPicks : ComponentBase
     {
         base.OnInitialized();
         _templates = TemplateService!.GetTopTemplates(5);
-        if (!_templates.Any())
-            Snackbar!.Add("Top template picks could not be loaded", Severity.Error);
     }
 
     public void CreateForm(Data.Template? template)
@@ -33,21 +31,20 @@ public partial class TopPicks : ComponentBase
 
         var userForm = FormService!.FindFormByUserAndTemplateId(CurrentUser!.Id, template.Id);
 
-        if (userForm is null)
-        {
-            var formId = FormService!.CreateForm(CurrentUser!.Id, template.Id);
-            if (formId > -1)
-            {
-                Snackbar!.Add("Form Successfully created", Severity.Success);
-                NavigationManager!.NavigateTo($"/form/edit/{formId}", forceLoad: true);
-            }
-
-            Snackbar!.Add("Form Creation Failed", Severity.Error);
-        }
+        Task.Delay(100);
 
         if (userForm is not null)
         {
-            NavigationManager!.NavigateTo("/form/edit/" + userForm.Id, forceLoad: true);
+            NavigationManager!.NavigateTo("/form/edit/" + userForm.Id);
+            return;
         }
+
+        var formId = FormService!.CreateForm(CurrentUser!.Id, template.Id);
+
+        if (formId == int.MinValue)
+            Snackbar!.Add("Form Creation Failed", Severity.Error);
+
+        Snackbar!.Add("Form Successfully created", Severity.Success);
+        NavigationManager!.NavigateTo($"/form/edit/{formId}");
     }
 }

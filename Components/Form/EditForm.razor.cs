@@ -30,27 +30,36 @@ public partial class EditForm : ComponentBase
     {
         await base.OnInitializedAsync();
 
-        var authState = await AuthenticationStateProvider!.GetAuthenticationStateAsync();
-        _currentUser = await UserManager!.GetUserAsync(authState.User);
-        _form = await FormService!.FindFormByIdAsync(Id);
-        if (_form is null) NavigationManager!.NavigateTo($"/");
-        await Task.Delay(500);
-        _totalLikesCount = await LikeService!.CountLikeByTemplateIdAsync(_form!.Template!.Id);
-        _isLiked = await LikeService!.IsLikedAsync(_currentUser!.Id, _form!.Template!.Id);
+        var authState = AuthenticationStateProvider!.GetAuthenticationStateAsync().Result;
+        _currentUser = UserManager!.GetUserAsync(authState.User).Result;
     }
 
-    private async Task LikeOrUnlikeForm()
+    protected override async Task OnParametersSetAsync()
     {
-        await LikeService!.LikeOrUnlikeTemplate(_currentUser!.Id, _form!.Template!.Id);
-        _totalLikesCount = await LikeService!.CountLikeByTemplateIdAsync(_form.Template!.Id);
-        _isLiked = await LikeService!.IsLikedAsync(_currentUser!.Id, _form!.Template!.Id);
+        await base.OnParametersSetAsync();
+        _form = await FormService!.FindFormByIdAsync(Id);
+        if (_form is null) NavigationManager!.NavigateTo($"/");
+        _totalLikesCount = LikeService!.CountLikeByTemplateId(_form!.Template!.Id);
+        _isLiked = LikeService!.IsLikedAsync(_currentUser!.Id, _form!.Template!.Id);
+    }
+
+    private void LikeOrUnlikeForm()
+    {
+        LikeService!.LikeOrUnlikeTemplate(_currentUser!.Id, _form!.Template!.Id);
+        _totalLikesCount = LikeService!.CountLikeByTemplateId(_form.Template!.Id);
+        _isLiked = LikeService!.IsLikedAsync(_currentUser!.Id, _form!.Template!.Id);
         StateHasChanged();
     }
     
-    private async Task SubmitForm()
+    private void SubmitForm()
     {
-        var succeed = await FormService!.SubmitFormAsync(_form);
-        if (succeed) Snackbar!.Add("Form Submitted", Severity.Success);
-        if (!succeed) Snackbar!.Add("Form Submission Failed", Severity.Error);
+        var succeed = FormService!.SubmitFormAsync(_form);
+        if (succeed)
+        {
+            Snackbar!.Add("Form Submitted", Severity.Success);
+            StateHasChanged();
+            return;
+        }
+        Snackbar!.Add("Form Submission Failed", Severity.Error);
     }
 }

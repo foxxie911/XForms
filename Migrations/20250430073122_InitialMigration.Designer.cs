@@ -12,8 +12,8 @@ using XForms.Data;
 namespace XForms.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250415142423_fixTemplate")]
-    partial class fixTemplate
+    [Migration("20250430073122_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -157,6 +157,43 @@ namespace XForms.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("XForms.Data.Answer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("FormId")
+                        .HasColumnType("integer");
+
+                    b.Property<long?>("Number")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Paragraph")
+                        .HasColumnType("text");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("SingleLine")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("FormId", "QuestionId");
+
+                    b.ToTable("Answers");
+                });
+
             modelBuilder.Entity("XForms.Data.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -229,6 +266,105 @@ namespace XForms.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("XForms.Data.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatorId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("TemplateId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("creatorId")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("templateId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TemplateId");
+
+                    b.HasIndex("CreatorId", "CreatedAt");
+
+                    b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("XForms.Data.Form", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatorId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsSubmitted")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("TemplateId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("TemplateId");
+
+                    b.ToTable("Forms");
+                });
+
+            modelBuilder.Entity("XForms.Data.Like", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("TemplateId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TemplateId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Likes");
+                });
+
             modelBuilder.Entity("XForms.Data.Question", b =>
                 {
                     b.Property<int>("Id")
@@ -255,7 +391,6 @@ namespace XForms.Migrations
 
                     b.Property<Guid>("Version")
                         .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -263,6 +398,26 @@ namespace XForms.Migrations
                     b.HasIndex("TemplateId", "Order");
 
                     b.ToTable("Questions");
+                });
+
+            modelBuilder.Entity("XForms.Data.Tag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name");
+
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("XForms.Data.Template", b =>
@@ -304,9 +459,32 @@ namespace XForms.Migrations
 
                     b.HasIndex("CreatorId");
 
-                    b.HasIndex("Title");
+                    b.HasIndex("Title", "CreatorId");
 
                     b.ToTable("Templates");
+                });
+
+            modelBuilder.Entity("XForms.Data.TemplateTag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("TagId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TemplateId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TagId");
+
+                    b.HasIndex("TemplateId");
+
+                    b.ToTable("TemplateTags");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -360,6 +538,82 @@ namespace XForms.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("XForms.Data.Answer", b =>
+                {
+                    b.HasOne("XForms.Data.Form", "Form")
+                        .WithMany("Answers")
+                        .HasForeignKey("FormId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("XForms.Data.Question", "Question")
+                        .WithMany()
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Form");
+
+                    b.Navigation("Question");
+                });
+
+            modelBuilder.Entity("XForms.Data.Comment", b =>
+                {
+                    b.HasOne("XForms.Data.ApplicationUser", "Creator")
+                        .WithMany("Comments")
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("XForms.Data.Template", "Template")
+                        .WithMany("Comments")
+                        .HasForeignKey("TemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Creator");
+
+                    b.Navigation("Template");
+                });
+
+            modelBuilder.Entity("XForms.Data.Form", b =>
+                {
+                    b.HasOne("XForms.Data.ApplicationUser", "Creator")
+                        .WithMany("Forms")
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("XForms.Data.Template", "Template")
+                        .WithMany("Forms")
+                        .HasForeignKey("TemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Creator");
+
+                    b.Navigation("Template");
+                });
+
+            modelBuilder.Entity("XForms.Data.Like", b =>
+                {
+                    b.HasOne("XForms.Data.Template", "Template")
+                        .WithMany("Likes")
+                        .HasForeignKey("TemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("XForms.Data.ApplicationUser", "User")
+                        .WithMany("Likes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Template");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("XForms.Data.Question", b =>
                 {
                     b.HasOne("XForms.Data.Template", "Template")
@@ -382,13 +636,45 @@ namespace XForms.Migrations
                     b.Navigation("Creator");
                 });
 
+            modelBuilder.Entity("XForms.Data.TemplateTag", b =>
+                {
+                    b.HasOne("XForms.Data.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("XForms.Data.Template", null)
+                        .WithMany()
+                        .HasForeignKey("TemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("XForms.Data.ApplicationUser", b =>
                 {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Forms");
+
+                    b.Navigation("Likes");
+
                     b.Navigation("Templates");
+                });
+
+            modelBuilder.Entity("XForms.Data.Form", b =>
+                {
+                    b.Navigation("Answers");
                 });
 
             modelBuilder.Entity("XForms.Data.Template", b =>
                 {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Forms");
+
+                    b.Navigation("Likes");
+
                     b.Navigation("Questions");
                 });
 #pragma warning restore 612, 618

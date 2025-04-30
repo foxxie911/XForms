@@ -8,8 +8,7 @@ public class TagService(ApplicationDbContext context)
     public IEnumerable<Tag> GetTags()
     {
         return context.Tags
-            .Include(t => t.Templates)
-            .AsEnumerable();
+            .Include(t => t.Templates);
     }
 
     public IEnumerable<string> FindTagsByTemplate(int templateId)

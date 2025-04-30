@@ -8,25 +8,26 @@ namespace XForms.Components.Form;
 public partial class AnswerBody : ComponentBase
 {
     // Parameter
-    [Parameter]
-    public required Question Question { get; set; }
-    [Parameter]
-    public required int FormId { get; set; }
-    [Parameter]
-    public bool IsSubmitted { get; set; }
-    
+    [Parameter] public required Question Question { get; set; }
+    [Parameter] public required int FormId { get; set; }
+    [Parameter] public bool IsSubmitted { get; set; }
+
     // Dependency Injection
     [Inject] public AnswerService? AnswerService { get; set; }
     [Inject] public ISnackbar? Snackbar { get; set; }
-    
+
     // Class Variable
     private Answer? _answer;
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync();
+        return base.OnInitializedAsync();
+    }
 
-        _answer = await AnswerService!.CreateOrShowAnswerAsync(Question!.Id, FormId);
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        _answer = AnswerService!.CreateOrShowAnswer(Question!.Id, FormId);
         if (_answer is null) Snackbar!.Add($"Answer creation failed for Question: {Question.Title}", Severity.Error);
     }
 

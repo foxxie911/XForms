@@ -27,17 +27,17 @@ public class FormService(ApplicationDbContext context)
             Console.WriteLine($"{e.Message}");
         }
 
-        return -1;
+        return int.MinValue;
     }
 
     public async Task<Form> FindFormByIdAsync(int formId)
     {
         try
         {
-            var form = await context.Forms.Where(f => f.Id == formId)
+            var form = context.Forms.Where(f => f.Id == formId)
                 .Include(f => f.Template)
-                .Include(f => f.Template!.Questions)
-                .FirstOrDefaultAsync();
+                .ThenInclude(t => t!.Questions)
+                .FirstOrDefault();
             form!.UpdatedAt = DateTime.UtcNow;
             await context.SaveChangesAsync();
             return form;
@@ -66,12 +66,12 @@ public class FormService(ApplicationDbContext context)
         return null!;
     }
 
-    public async Task<bool> SubmitFormAsync(Form? form)
+    public bool SubmitFormAsync(Form? form)
     {
         try
         {
             form!.IsSubmitted = true;
-            await context.SaveChangesAsync();
+            context.SaveChanges();
             return true;
         }
         catch (Exception e)
@@ -88,7 +88,6 @@ public class FormService(ApplicationDbContext context)
         {
             var forms = context.Forms
                 .Where(f => f.CreatorId == userId)
-                .AsNoTracking()
                 .Include(f => f.Template);
             return forms;
         }
@@ -117,7 +116,7 @@ public class FormService(ApplicationDbContext context)
         return [];
     }
 
-    public bool DeleteForms(HashSet<Form> selectedForms)
+    public bool DeleteFormsAsync(HashSet<Form> selectedForms)
     {
         try
         {

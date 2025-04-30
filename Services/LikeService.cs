@@ -5,16 +5,16 @@ namespace XForms.Services;
 
 public class LikeService(ApplicationDbContext context)
 {
-    public async Task LikeOrUnlikeTemplate(string userId, int templateId)
+    public void LikeOrUnlikeTemplate(string userId, int templateId)
     {
         try
         {
-            var existingLike = await context.Likes
-                .FirstOrDefaultAsync(l => l.UserId == userId && l.TemplateId == templateId);
+            var existingLike = context.Likes
+                .FirstOrDefault(l => l.UserId == userId && l.TemplateId == templateId);
 
             if (existingLike is null)
             {
-                await context.Likes.AddAsync(new Like()
+                context.Likes.Add(new Like()
                 {
                     UserId = userId,
                     TemplateId = templateId
@@ -26,7 +26,7 @@ public class LikeService(ApplicationDbContext context)
                 context.Likes.Remove(existingLike);
             }
 
-            await context.SaveChangesAsync();
+            context.SaveChanges();
         }
         catch (Exception e)
         {
@@ -34,14 +34,14 @@ public class LikeService(ApplicationDbContext context)
         }
     }
 
-    public async Task<int> CountLikeByTemplateIdAsync(int templateId)
+    public int CountLikeByTemplateId(int templateId)
     {
         try
         {
-            var likeCount = await context.Likes
+            var likeCount = context.Likes
                 .Where(l => l.TemplateId == templateId)
                 .AsNoTracking()
-                .CountAsync();
+                .Count();
             return likeCount;
         }
         catch (Exception e)
@@ -52,14 +52,14 @@ public class LikeService(ApplicationDbContext context)
         return -1;
     }
 
-    public async Task<bool> IsLikedAsync(string userId, int templateId)
+    public bool IsLikedAsync(string userId, int templateId)
     {
         try
         {
-            var like = await context.Likes
+            var like = context.Likes
                 .Where(l => l.TemplateId == templateId && l.UserId == userId)
                 .AsNoTracking()
-                .FirstOrDefaultAsync();
+                .FirstOrDefault();
             if (like != null) return true;
         }
         catch (Exception e)
