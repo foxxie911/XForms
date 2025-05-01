@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using XForms.Data;
 using XForms.Services;
+using XForms.Services.Implementation;
 
 namespace XForms.Components.Pages;
 
@@ -17,11 +18,11 @@ public partial class TopPicks : ComponentBase
     [Inject] private NavigationManager? NavigationManager { get; set; }
 
     // Class variable
-    private IEnumerable<Data.Template> _templates = [];
+    private List<Data.Template> _templates = [];
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
-        _templates = TemplateService!.GetTopTemplates(5);
+        await base.OnInitializedAsync();
+        _templates = await TemplateService!.GetTopTemplates(5);
     }
 }

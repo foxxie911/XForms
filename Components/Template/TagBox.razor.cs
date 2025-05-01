@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 using XForms.Services;
+using XForms.Services.Implementation;
 
 namespace XForms.Components.Template;
 
@@ -20,10 +21,10 @@ public partial class TagBox : ComponentBase
     private string _tagName = string.Empty;
     private IEnumerable<string> _tags = [];
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
-        _tags = TagService!.FindTagsByTemplate(TemplateId);
+        await base.OnInitializedAsync();
+        _tags = await TagService!.FindTagsByTemplate(TemplateId);
     }
 
     private async Task<IEnumerable<string>> SearchTag(string? searchString, CancellationToken cancellationToken)
@@ -32,21 +33,21 @@ public partial class TagBox : ComponentBase
         return tags;
     }
 
-    private void AddTag(KeyboardEventArgs arg)
+    private async Task AddTag(KeyboardEventArgs arg)
     {
         if (arg.Key == "Enter")
         {
-            var succeed = TagService!.CreateOrAddTag(_tagName, TemplateId);
+            var succeed = await TagService!.CreateOrAddTagAsync(_tagName, TemplateId);
             if (!succeed) Snackbar!.Add("Tag creation failed", Severity.Error);
-            _tags = TagService!.FindTagsByTemplate(TemplateId);
+            _tags = await TagService!.FindTagsByTemplate(TemplateId);
             StateHasChanged();
         }
     }
 
-    private void DeleteTag(MudChip<string> tag)
+    private async Task DeleteTag(MudChip<string> tag)
     {
-        TagService!.DeleteTag(tag.Value!, TemplateId);
-        _tags = TagService!.FindTagsByTemplate(TemplateId);
+        await TagService!.DeleteTagAsync(tag.Value!, TemplateId);
+        _tags = await TagService!.FindTagsByTemplate(TemplateId);
         StateHasChanged();
     }
 }

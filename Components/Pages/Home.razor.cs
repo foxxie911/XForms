@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using MudBlazor;
 using XForms.Data;
 using XForms.Services;
+using XForms.Services.Implementation;
 
 namespace XForms.Components.Pages;
 
@@ -27,11 +28,11 @@ public partial class Home : ComponentBase
         _currentUser = UserManager!.GetUserAsync(authState.User).Result;
     }
 
-    private void NewTemplate()
+    private async Task NewTemplate()
     {
         if (_currentUser is null)
             Snackbar!.Add("No user logged in");
-        var templateId = TemplateService!.CreateTemplate(_currentUser!.Id);
+        var templateId = await TemplateService!.CreateTemplateAsync(_currentUser!.Id);
         NavigationManager!.NavigateTo($"/template/edit/{templateId}");
     }
 }

@@ -12,7 +12,8 @@ using XForms.Components.Account;
 using XForms.Data;
 using XForms.Hubs;
 using XForms.Seeder;
-using XForms.Services;
+using XForms.Services.Implementation;
+using XForms.Services.Interface;
 using XForms.Services.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,19 +37,31 @@ var builder = WebApplication.CreateBuilder(args);
 
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
                            throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+    builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
+        options.UseNpgsql(connectionString));
+    /*
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseNpgsql(connectionString));
+    */
     builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
     // Custom Service
+    builder.Services.AddScoped<ITemplateService, TemplateService>();
     builder.Services.AddScoped<TemplateService>();
+    builder.Services.AddScoped<IQuestionService, QuestionService>();
     builder.Services.AddScoped<QuestionService>();
+    builder.Services.AddScoped<ISearchService, SearchService>();
     builder.Services.AddScoped<SearchService>();
+    builder.Services.AddScoped<IFormService, FormService>();
     builder.Services.AddScoped<FormService>();
+    builder.Services.AddScoped<IAnswerService, AnswerService>();
     builder.Services.AddScoped<AnswerService>();
+    builder.Services.AddScoped<ICommentService, CommentService>();
     builder.Services.AddScoped<CommentService>();
     builder.Services.AddScoped<CommentSignalRService>();
+    builder.Services.AddScoped<ILikeService, LikeService>();
     builder.Services.AddScoped<LikeService>();
+    builder.Services.AddScoped<ITagService, TagService>();
     builder.Services.AddScoped<TagService>();
 
     builder.Services.AddIdentityCore<ApplicationUser>(options => { options.SignIn.RequireConfirmedAccount = false; })

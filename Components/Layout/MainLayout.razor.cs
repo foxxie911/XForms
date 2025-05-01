@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using MudBlazor;
 using XForms.Data;
-using XForms.Services;
+using XForms.Services.Implementation;
 
 namespace XForms.Components.Layout;
 
@@ -37,23 +37,25 @@ public partial class MainLayout : LayoutComponentBase
         return templates;
     }
 
-    public void ManageSearchSelection(Data.Template? template)
+    public async Task ManageSearchSelection(Data.Template? template)
     {
-        var user = _authState!.User;
-        if (user.Identity!.IsAuthenticated)
-            NavigationManager!.NavigateTo($"/form/view/{template?.Id}");
-        
         if (template == null) return;
+        
+        var user = _authState!.User;
+        if (user.Identity!.IsAuthenticated == false)
+        {
+            NavigationManager!.NavigateTo($"/form/view/{template.Id}");
+            return;
+        }
 
-        var userForm = FormService!.FindFormByUserAndTemplateId(_user!.Id, template.Id);
-
+        var userForm = await FormService!.FindFormByUserAndTemplateIdAsync(_user!.Id, template.Id);
         if (userForm is not null)
         {
             NavigationManager!.NavigateTo("/form/edit/" + userForm.Id);
             return;
         }
 
-        var formId = FormService!.CreateForm(_user!.Id, template.Id);
+        var formId = await FormService!.CreateFormAsync(_user!.Id, template.Id);
 
         if (formId == int.MinValue)
             Snackbar!.Add("Form Creation Failed", Severity.Error);
@@ -61,11 +63,4 @@ public partial class MainLayout : LayoutComponentBase
         Snackbar!.Add("Form Successfully created", Severity.Success);
         NavigationManager!.NavigateTo($"/form/edit/{formId}");
     }
-
-    /*
-    private void ViewForm(Data.Template? template)
-    {
-        NavigationManager!.NavigateTo($"/form/view/{template?.Id}");
-    }
-*/
 }

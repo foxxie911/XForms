@@ -1,6 +1,6 @@
 @using XForms.Data
 
-@if (!_templates!.Any())
+@if (_templates.Count == 0)
 {
     <MudText Align="Align.Center" GutterBottom="true">You have no templates yet</MudText>
 }

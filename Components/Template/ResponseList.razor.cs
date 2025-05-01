@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using XForms.Data;
 using XForms.Services;
+using XForms.Services.Implementation;
 
 namespace XForms.Components.Template;
 
@@ -21,13 +22,13 @@ public partial class ResponseList : ComponentBase
     private IEnumerable<Answer> _answers = [];
     private MudDataGrid<Answer>? _answerDataGrid;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
+        await base.OnInitializedAsync();
 
-        _questions = QuestionService!.GetTemplateQuestionById(TemplateId);
-        _answers = AnswerService!
-            .GetAnswersByQuestions(_questions.Select(q => q.Id))
+        _questions = await QuestionService!.GetQuestionsByTemplateIdAsync(TemplateId);
+        _answers = (await AnswerService!
+            .GetAnswersByQuestions(_questions.Select(q => q.Id)))
             .OrderBy(a => a.Question.Order);
     }
 }

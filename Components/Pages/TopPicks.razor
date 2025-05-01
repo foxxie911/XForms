@@ -2,11 +2,11 @@
     <MudText Typo="Typo.h5" GutterBottom="true">Top Picks</MudText>
 
     <MudPaper Elevation="0" Class="d-flex overflow-auto my-2 pa-2 gap-4">
-        @if (!_templates.Any())
+        @if (_templates.Count == 0)
         {
             <MudText GutterBottom="true" Align="Align.Center">There no picks at this moment</MudText>
         }
-        @foreach (var template in _templates!)
+        @foreach (var template in _templates)
         {
             <FormCard ChosenTemplate="template" CurrentUser="CurrentUser"/>
         }

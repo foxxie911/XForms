@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using XForms.Services;
+using XForms.Services.Implementation;
 
 namespace XForms.Components.Admin;
 
@@ -22,7 +23,7 @@ public partial class ManageTemplate : ComponentBase
         _templates = TemplateService!.GetAllTemplates();
     }
     
-    private void DeleteSelectedTemplates()
+    private async Task DeleteSelectedTemplates()
     {
         Snackbar!.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
         if (_selectedTemplates!.Count == 0)
@@ -31,12 +32,12 @@ public partial class ManageTemplate : ComponentBase
             return;
         }
 
-        var success = TemplateService!.DeleteTemplates(_selectedTemplates);
+        var success = await TemplateService!.DeleteTemplatesAsync(_selectedTemplates);
 
         if (success)
         {
             _selectedTemplates.Clear();
-            _templateDataGrid!.ReloadServerData();
+            await _templateDataGrid!.ReloadServerData();
             Snackbar!.Add("Templates successfully deleted", Severity.Success);
         }
 

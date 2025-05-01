@@ -1,20 +1,27 @@
 @using XForms.Data
-<MudDropContainer
-    T="Question"
-    Items="@Template.Questions.OrderBy(q => q.Order)"
-    ItemDropped="@ReorderQuestions"
-    ItemsSelector="@((_, _) => true)"
-    @ref="_dragDropContainer">
-    <ChildContent>
-        <MudPaper Class="pa-2">
-            <MudText Typo="Typo.h5" Class="ma-4">Questions</MudText>
-            <MudDropZone T="Question" AllowReorder="true" Class="flex flex-wrap"/>
-        </MudPaper>
-    </ChildContent>
-    <ItemRenderer>
-        <QuestionBody Question="@context" QuestionDeleted="@DeleteQuestion"/>
-    </ItemRenderer>
-</MudDropContainer>
+@if (_questions.Count == 0)
+{
+    <MudText>No question added yet</MudText>
+}
+else
+{
+    <MudDropContainer
+        T="Question"
+        @ref="_dragDropContainer"
+        Items="@_questions.OrderBy(q => q.Order)"
+        ItemDropped="ReorderQuestions"
+        ItemsSelector="@((_, _) => true)">
+        <ChildContent>
+            <MudPaper Class="pa-2">
+                <MudText Typo="Typo.h5" Class="ma-4">Questions</MudText>
+                <MudDropZone T="Question" AllowReorder="true" Class="flex flex-wrap"/>
+            </MudPaper>
+        </ChildContent>
+        <ItemRenderer>
+            <QuestionBody Question="@context" QuestionDeleted="@DeleteQuestion"/>
+        </ItemRenderer>
+    </MudDropContainer>
+}
 <MudButton
     Variant="Variant.Filled"
     Color="Color.Surface"

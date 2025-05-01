@@ -21,7 +21,7 @@ else
                     Variant="Variant.Filled"
                     AutoFocus="true"
                     @bind-Text="Question.Title"
-                    DebounceInterval="500"
+                    DebounceInterval="5000"
                     OnDebounceIntervalElapsed="UpdateQuestion"
                     Label="Question"/>
             </MudItem>
@@ -42,7 +42,7 @@ else
                 <MudTextField T="string"
                               AutoFocus="true"
                               Lines="2"
-                              DebounceInterval="500"
+                              DebounceInterval="5000"
                               OnDebounceIntervalElapsed="UpdateQuestion"
                               @bind-Text="Question.Description"
                               Label="Question Description"

@@ -1,18 +1,20 @@
-
 using Microsoft.EntityFrameworkCore;
 using XForms.Data;
+using XForms.Services.Interface;
 
-namespace XForms.Services;
+namespace XForms.Services.Implementation;
 
-public class CommentService(ApplicationDbContext context)
+public class CommentService(IDbContextFactory<ApplicationDbContext> contextFactory) : ICommentService
 {
-    public IEnumerable<Comment> GetCommentsByTemplate(int templateId)
+    public async Task<List<Comment>> GetCommentsByTemplateAsync(int templateId)
     {
+        await using var context = await contextFactory.CreateDbContextAsync();
         try
         {
-            var answer = context.Comments
+            var answer = await context.Comments
                 .Where(c => c.TemplateId == templateId)
-                .Include(c => c.Creator);
+                .Include(c => c.Creator)
+                .ToListAsync();
             return answer;
         }
         catch (Exception e)
@@ -23,9 +25,10 @@ public class CommentService(ApplicationDbContext context)
         return [];
     }
 
-    public async Task<Comment> CreateComment(string message, string creatorId, int templateId)
+    public async Task<Comment> CreateCommentAsync(string message, string creatorId, int templateId)
     {
-        try { var dbComment = context.Comments.Add(new Comment() {
+        await using var context = await contextFactory.CreateDbContextAsync();
+        try { var dbComment = await context.Comments.AddAsync(new Comment() {
                 Message= message,
                 CreatorId = creatorId,
                 TemplateId = templateId,
@@ -42,8 +45,9 @@ public class CommentService(ApplicationDbContext context)
         return null!;
     }
 
-    public async Task<bool> DeleteComment(Comment comment)
+    public async Task<bool> DeleteCommentAsync(Comment comment)
     {
+        await using var context = await contextFactory.CreateDbContextAsync();
         try
         {
             context.Comments.Remove(comment);

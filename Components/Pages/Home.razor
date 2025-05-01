@@ -23,7 +23,7 @@ else
             Create
         </MudButton>
         
-        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-4">
             <MudTabPanel Text="Templates">
                 <TemplateList UserId="@_currentUser.Id"/>
             </MudTabPanel>
@@ -31,22 +31,5 @@ else
                 <FormList UserId="@_currentUser.Id"/>
             </MudTabPanel>
         </MudTabs>
-        @*
-        <MudButton Variant="Variant.Text"
-                   Color="Color.Primary"
-                   OnClick="() => _selectedComponent = (typeof(TemplateList))">
-            Templates
-        </MudButton>
-        <MudButton Variant="Variant.Text"
-                   Color="Color.Primary"
-                   OnClick="() => _selectedComponent = (typeof(FormList))">
-            Forms
-        </MudButton>
-        <DynamicComponent Type="_selectedComponent"
-                          Parameters="@(new Dictionary<string, object>()
-                                      {
-                                          { "UserId", _currentUser.Id }
-                                      })"/>
-    *@
     </AuthorizeView>
 }

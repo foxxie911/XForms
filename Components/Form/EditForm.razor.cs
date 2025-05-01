@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using MudBlazor;
 using XForms.Data;
 using XForms.Services;
+using XForms.Services.Implementation;
 
 namespace XForms.Components.Form;
 
@@ -39,21 +40,21 @@ public partial class EditForm : ComponentBase
         await base.OnParametersSetAsync();
         _form = await FormService!.FindFormByIdAsync(Id);
         if (_form is null) NavigationManager!.NavigateTo($"/");
-        _totalLikesCount = LikeService!.CountLikeByTemplateId(_form!.Template!.Id);
-        _isLiked = LikeService!.IsLikedAsync(_currentUser!.Id, _form!.Template!.Id);
+        _totalLikesCount = await LikeService!.CountLikeByTemplateIdAsync(_form!.Template!.Id);
+        _isLiked = await LikeService!.IsLikedAsync(_currentUser!.Id, _form!.Template!.Id);
     }
 
-    private void LikeOrUnlikeForm()
+    private async Task LikeOrUnlikeForm()
     {
-        LikeService!.LikeOrUnlikeTemplate(_currentUser!.Id, _form!.Template!.Id);
-        _totalLikesCount = LikeService!.CountLikeByTemplateId(_form.Template!.Id);
-        _isLiked = LikeService!.IsLikedAsync(_currentUser!.Id, _form!.Template!.Id);
+        await LikeService!.LikeOrUnlikeTemplate(_currentUser!.Id, _form!.Template!.Id);
+        _totalLikesCount = await LikeService!.CountLikeByTemplateIdAsync(_form.Template!.Id);
+        _isLiked = await LikeService!.IsLikedAsync(_currentUser!.Id, _form!.Template!.Id);
         StateHasChanged();
     }
     
-    private void SubmitForm()
+    private async Task SubmitForm()
     {
-        var succeed = FormService!.SubmitFormAsync(_form);
+        var succeed = await FormService!.SubmitFormAsync(_form);
         if (succeed)
         {
             Snackbar!.Add("Form Submitted", Severity.Success);

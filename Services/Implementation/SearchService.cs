@@ -1,12 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using XForms.Data;
+using XForms.Services.Interface;
 
-namespace XForms.Services;
+namespace XForms.Services.Implementation;
 
-public class SearchService(ApplicationDbContext context)
+
+public class SearchService(IDbContextFactory<ApplicationDbContext> contextFactory) : ISearchService
 {
-    public async Task<IEnumerable<Template>> SearchTemplateByTitleAsync(string searchString, int maxResult = 10)
+    public async Task<List<Template>> SearchTemplateByTitleAsync(string searchString, int maxResult = 10)
     {
+        await using var context = await contextFactory.CreateDbContextAsync();
         if (string.IsNullOrWhiteSpace(searchString))
             return [];
 
@@ -21,9 +24,10 @@ public class SearchService(ApplicationDbContext context)
         return templates;
     }
 
-    public async Task<IEnumerable<string>> SearchTagsByNameAsync(string searchString, int maxResult = 5)
+    public async Task<List<string>> SearchTagsByNameAsync(string searchString, int maxResult = 5)
     {
-        if (string.IsNullOrWhiteSpace(searchString)) return Array.Empty<string>();
+        await using var context = await contextFactory.CreateDbContextAsync();
+        if (string.IsNullOrWhiteSpace(searchString)) return [];
         var tagNames = await context.Tags
             .Where(t => EF.Functions.ILike(t.Name, $"%{searchString}%"))
             .Select(t => t.Name)

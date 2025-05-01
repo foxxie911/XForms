@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Identity;
 using MudBlazor;
 using XForms.Data;
-using XForms.Services;
+using XForms.Services.Implementation;
 
 namespace XForms.Components.Template;
 
@@ -39,31 +39,35 @@ public partial class EditTemplate : ComponentBase
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
-        _template = await TemplateService!.GetTemplate(Id);
-        _totalLikesCount = LikeService!.CountLikeByTemplateId(_template.Id);
-        _isLiked = LikeService!.IsLikedAsync(_currentUser!.Id, _template.Id);
+        _template = await TemplateService!.GetTemplateAsync(Id);
+        _totalLikesCount = await LikeService!.CountLikeByTemplateIdAsync(_template.Id);
+        _isLiked = await LikeService!.IsLikedAsync(_currentUser!.Id, _template.Id);
     }
 
     // Template Section Start
     private void UpdateTemplate()
     {
-        _ = TemplateService!.UpdateTemplate(_template);
+        _ = TemplateService!.UpdateTemplateAsync(_template);
+        Snackbar!.Add("Template Updated", Severity.Info);
     }
 
     private async Task PublishTemplatePublic()
     {
         var success = await TemplateService!.MakePublicAsync(_template);
         if (success)
+        {
             Snackbar!.Add("Template  published successfully", Severity.Success);
-        if (!success)
-            Snackbar!.Add("Template publish failed", Severity.Error);
+            return;
+        }
+
+        Snackbar!.Add("Template publish failed", Severity.Error);
     }
 
-    private void LikeOrUnlikeTemplate()
+    private async Task LikeOrUnlikeTemplate()
     {
-        LikeService!.LikeOrUnlikeTemplate(_currentUser!.Id, _template!.Id);
-        _totalLikesCount = LikeService!.CountLikeByTemplateId(_template.Id);
-        _isLiked = LikeService!.IsLikedAsync(_currentUser!.Id, _template.Id);
+        await LikeService!.LikeOrUnlikeTemplate(_currentUser!.Id, _template!.Id);
+        _totalLikesCount = await LikeService!.CountLikeByTemplateIdAsync(_template.Id);
+        _isLiked = await LikeService!.IsLikedAsync(_currentUser!.Id, _template.Id);
         StateHasChanged();
     }
 

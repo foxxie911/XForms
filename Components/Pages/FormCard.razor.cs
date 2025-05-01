@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using XForms.Data;
 using XForms.Services;
+using XForms.Services.Implementation;
 
 namespace XForms.Components.Pages;
 
@@ -16,11 +17,11 @@ public partial class FormCard : ComponentBase
     [Inject] private ISnackbar? Snackbar { get; set; }
     [Inject] private NavigationManager? NavigationManager { get; set; }
     
-    public void CreateForm(Data.Template? template)
+    public async Task CreateForm(Data.Template? template)
     {
         if (template == null) return;
 
-        var userForm = FormService!.FindFormByUserAndTemplateId(CurrentUser!.Id, template.Id);
+        var userForm = await FormService!.FindFormByUserAndTemplateIdAsync(CurrentUser.Id, template.Id);
 
         if (userForm is not null)
         {
@@ -28,7 +29,7 @@ public partial class FormCard : ComponentBase
             return;
         }
 
-        var formId = FormService!.CreateForm(CurrentUser!.Id, template.Id);
+        var formId = await FormService!.CreateFormAsync(CurrentUser.Id, template.Id);
 
         if (formId == int.MinValue)
             Snackbar!.Add("Form Creation Failed", Severity.Error);

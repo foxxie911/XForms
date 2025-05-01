@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using XForms.Services;
+using XForms.Services.Implementation;
 
 namespace XForms.Components.Pages;
 
@@ -15,43 +15,41 @@ public partial class TemplateList : ComponentBase
     [Inject] private NavigationManager? NavigationManager { get; set; }
 
     // Class variables
-    private HashSet<Data.Template>? _selectedTemplates = [];
-    private IEnumerable<Data.Template>? _templates;
+    private HashSet<Data.Template> _selectedTemplates = [];
+    private List<Data.Template> _templates = [];
     private MudDataGrid<Data.Template>? _templateDataGrid;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
-        _templates = TemplateService!.GetTemplatesByUserId(UserId);
+        await base.OnInitializedAsync();
+        _templates = await TemplateService!.GetTemplatesByUserId(UserId);
     }
-    
-    private void DeleteSelectedTemplates()
+
+    private async Task DeleteSelectedTemplates()
     {
         Snackbar!.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
-        if (_selectedTemplates!.Count == 0)
+        if (_selectedTemplates.Count == 0)
         {
             Snackbar!.Add("No templates selected", Severity.Info);
             return;
         }
 
-        var success = TemplateService!.DeleteTemplates(_selectedTemplates);
-
-        if (success)
-        {
-            _selectedTemplates.Clear();
-            _templateDataGrid!.ReloadServerData();
-            Snackbar!.Add("Templates successfully deleted", Severity.Success);
-        }
+        var success = await TemplateService!.DeleteTemplatesAsync(_selectedTemplates);
 
         if (!success)
         {
             Snackbar!.Add("Templates failed to delete", Severity.Error);
+            return;
         }
+
+        _selectedTemplates.Clear();
+        await _templateDataGrid!.ReloadServerData();
+        Snackbar!.Add("Templates successfully deleted", Severity.Success);
     }
 
     private void NavigateToTemplate(DataGridRowClickEventArgs<Data.Template> args)
     {
-        _selectedTemplates!.Clear();
+        _selectedTemplates.Clear();
         NavigationManager!.NavigateTo($"/template/edit/{args.Item.Id}");
     }
 }

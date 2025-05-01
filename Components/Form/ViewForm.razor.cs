@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using XForms.Services;
+using XForms.Services.Implementation;
 
 namespace XForms.Components.Form;
 
@@ -19,8 +20,8 @@ public partial class ViewForm : ComponentBase
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
-        _template = await TemplateService!.GetTemplate(Id);
+        _template = await TemplateService!.GetTemplateIncludingQuestionAsync(Id);
         if (_template is null) NavigationManager!.NavigateTo($"/");
-        _totalLikeCount = LikeService!.CountLikeByTemplateId(_template!.Id);
+        _totalLikeCount = await LikeService!.CountLikeByTemplateIdAsync(_template!.Id);
     }
 }

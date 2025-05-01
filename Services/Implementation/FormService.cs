@@ -1,17 +1,17 @@
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 using XForms.Data;
+using XForms.Services.Interface;
 
-namespace XForms.Services;
+namespace XForms.Services.Implementation;
 
-public class FormService(ApplicationDbContext context)
+public class FormService(IDbContextFactory<ApplicationDbContext> contextFactory) : IFormService
 {
-    public int CreateForm(string userId, int templateId)
+    public async Task<int> CreateFormAsync(string userId, int templateId)
     {
+        await using var context = await contextFactory.CreateDbContextAsync();
         try
         {
-            var form = context.Forms.Add(new Form()
+            var form = await context.Forms.AddAsync(new Form()
             {
                 CreatorId = userId,
                 TemplateId = templateId,
@@ -19,7 +19,7 @@ public class FormService(ApplicationDbContext context)
                 UpdatedAt = DateTime.UtcNow,
                 Version = Guid.NewGuid()
             });
-            context.SaveChanges();
+            await context.SaveChangesAsync();
             return form.Entity.Id;
         }
         catch (Exception e)
@@ -32,12 +32,13 @@ public class FormService(ApplicationDbContext context)
 
     public async Task<Form> FindFormByIdAsync(int formId)
     {
+        await using var context = await contextFactory.CreateDbContextAsync();
         try
         {
-            var form = context.Forms.Where(f => f.Id == formId)
+            var form = await context.Forms.Where(f => f.Id == formId)
                 .Include(f => f.Template)
                 .ThenInclude(t => t!.Questions)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
             form!.UpdatedAt = DateTime.UtcNow;
             await context.SaveChangesAsync();
             return form;
@@ -50,12 +51,13 @@ public class FormService(ApplicationDbContext context)
         return null!;
     }
 
-    public Form FindFormByUserAndTemplateId(string userId, int templateId)
+    public async Task<Form> FindFormByUserAndTemplateIdAsync(string userId, int templateId)
     {
+        await using var context = await contextFactory.CreateDbContextAsync();
         try
         {
-            var form = context.Forms
-                .FirstOrDefault(f => f.CreatorId == userId && f.TemplateId == templateId);
+            var form = await context.Forms
+                .FirstOrDefaultAsync(f => f.CreatorId == userId && f.TemplateId == templateId);
             return form!;
         }
         catch (Exception e)
@@ -66,12 +68,13 @@ public class FormService(ApplicationDbContext context)
         return null!;
     }
 
-    public bool SubmitFormAsync(Form? form)
+    public async Task<bool> SubmitFormAsync(Form? form)
     {
+        await using var context = await contextFactory.CreateDbContextAsync();
         try
         {
             form!.IsSubmitted = true;
-            context.SaveChanges();
+            await context.SaveChangesAsync();
             return true;
         }
         catch (Exception e)
@@ -82,13 +85,15 @@ public class FormService(ApplicationDbContext context)
         return false;
     }
 
-    public IEnumerable<Form>? FindFormsByUserId(string userId)
+    public async Task<List<Form>> FindFormsByUserId(string userId)
     {
+        await using var context = await contextFactory.CreateDbContextAsync();
         try
         {
-            var forms = context.Forms
+            var forms = await context.Forms
                 .Where(f => f.CreatorId == userId)
-                .Include(f => f.Template);
+                .Include(f => f.Template)
+                .ToListAsync();
             return forms;
         }
         catch (Exception e)
@@ -99,29 +104,13 @@ public class FormService(ApplicationDbContext context)
         return [];
     }
 
-    public IEnumerable<Form>? ListAllForms()
+    public async Task<bool> DeleteFormsAsync(HashSet<Form> selectedForms)
     {
-        try
-        {
-            var forms = context.Forms
-                .AsNoTracking()
-                .Include(f => f.Template);
-            return forms;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine($"{e.Message}");
-        }
-
-        return [];
-    }
-
-    public bool DeleteFormsAsync(HashSet<Form> selectedForms)
-    {
+        await using var context = await contextFactory.CreateDbContextAsync();
         try
         {
             context.Forms.RemoveRange(selectedForms);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
             return true;
         }
         catch (Exception e)
@@ -132,14 +121,16 @@ public class FormService(ApplicationDbContext context)
         return false;
     }
 
-    public IEnumerable<Form> FindFormsByTemplateId(int templateId)
+    public async Task<List<Form>> FindFormsByTemplateId(int templateId)
     {
+        await using var context = await contextFactory.CreateDbContextAsync();
         try
         {
-            var forms = context.Forms
+            var forms = await context.Forms
                 .Where(f => f.TemplateId == templateId && f.IsSubmitted == true)
                 .Include(f => f.Creator)
-                .AsNoTracking();
+                .AsNoTracking()
+                .ToListAsync();
             return forms;
         }
         catch (Exception e)

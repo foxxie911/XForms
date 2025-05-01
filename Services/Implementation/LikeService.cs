@@ -1,16 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using XForms.Data;
+using XForms.Services.Interface;
 
-namespace XForms.Services;
+namespace XForms.Services.Implementation;
 
-public class LikeService(ApplicationDbContext context)
+public class LikeService(IDbContextFactory<ApplicationDbContext> contextFactory) : ILikeService
 {
-    public void LikeOrUnlikeTemplate(string userId, int templateId)
+    public async Task LikeOrUnlikeTemplate(string userId, int templateId)
     {
+        await using var context = await contextFactory.CreateDbContextAsync();
         try
         {
-            var existingLike = context.Likes
-                .FirstOrDefault(l => l.UserId == userId && l.TemplateId == templateId);
+            var existingLike = await context.Likes
+                .FirstOrDefaultAsync(l => l.UserId == userId && l.TemplateId == templateId);
 
             if (existingLike is null)
             {
@@ -26,7 +28,7 @@ public class LikeService(ApplicationDbContext context)
                 context.Likes.Remove(existingLike);
             }
 
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
         catch (Exception e)
         {
@@ -34,14 +36,15 @@ public class LikeService(ApplicationDbContext context)
         }
     }
 
-    public int CountLikeByTemplateId(int templateId)
+    public async Task<int> CountLikeByTemplateIdAsync(int templateId)
     {
+        await using var context = await contextFactory.CreateDbContextAsync();
         try
         {
-            var likeCount = context.Likes
+            var likeCount = await context.Likes
                 .Where(l => l.TemplateId == templateId)
                 .AsNoTracking()
-                .Count();
+                .CountAsync();
             return likeCount;
         }
         catch (Exception e)
@@ -52,14 +55,15 @@ public class LikeService(ApplicationDbContext context)
         return -1;
     }
 
-    public bool IsLikedAsync(string userId, int templateId)
+    public async Task<bool> IsLikedAsync(string userId, int templateId)
     {
+        await using var context = await contextFactory.CreateDbContextAsync();
         try
         {
-            var like = context.Likes
+            var like = await context.Likes
                 .Where(l => l.TemplateId == templateId && l.UserId == userId)
                 .AsNoTracking()
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
             if (like != null) return true;
         }
         catch (Exception e)

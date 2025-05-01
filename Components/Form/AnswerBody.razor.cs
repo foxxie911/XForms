@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using XForms.Data;
 using XForms.Services;
+using XForms.Services.Implementation;
 
 namespace XForms.Components.Form;
 
@@ -24,15 +25,15 @@ public partial class AnswerBody : ComponentBase
         return base.OnInitializedAsync();
     }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        base.OnParametersSet();
-        _answer = AnswerService!.CreateOrShowAnswer(Question!.Id, FormId);
+        await base.OnParametersSetAsync();
+        _answer = await AnswerService!.CreateOrShowAnswer(Question!.Id, FormId);
         if (_answer is null) Snackbar!.Add($"Answer creation failed for Question: {Question.Title}", Severity.Error);
     }
 
     private void UpdateAnswer()
     {
-        _ = AnswerService!.UpdateAnswer(_answer);
+        _ = AnswerService!.UpdateAnswerAsync(_answer);
     }
 }

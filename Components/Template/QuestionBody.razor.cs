@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using XForms.Data;
 using XForms.Services;
+using XForms.Services.Implementation;
 
 namespace XForms.Components.Template;
 
@@ -14,7 +15,7 @@ public partial class QuestionBody : ComponentBase
 
     private void UpdateQuestion()
     {
-        _ = QuestionService!.UpdateQuestion();
+        _ = QuestionService!.UpdateQuestionAsync(Question!);
     }
 
     private void OnQuestionDeleted()

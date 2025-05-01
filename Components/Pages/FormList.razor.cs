@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using XForms.Services;
+using XForms.Services.Implementation;
 
 namespace XForms.Components.Pages;
 
@@ -15,27 +15,26 @@ public partial class FormList : ComponentBase
     [Inject] private NavigationManager? NavigationManager { get; set; }
 
     // Class variables
-    private HashSet<Data.Form>? _selectedForms = [];
-    private IEnumerable<Data.Form>? _forms;
+    private HashSet<Data.Form> _selectedForms = [];
+    private List<Data.Form> _forms = [];
     private MudDataGrid<Data.Form>? _formDataGrid;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
-        _forms = FormService!.FindFormsByUserId(UserId);
+        await base.OnInitializedAsync();
+        _forms = await FormService!.FindFormsByUserId(UserId);
     }
 
-    private void DeleteSelectedForms()
+    private async Task DeleteSelectedForms()
     {
         Snackbar!.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
-        if (_selectedForms!.Count == 0)
+        if (_selectedForms.Count == 0)
         {
             Snackbar!.Add("No form selected", Severity.Info);
             return;
         }
 
-        var success = FormService!.DeleteFormsAsync(_selectedForms);
-        Task.Delay(50);
+        var success = await FormService!.DeleteFormsAsync(_selectedForms);
 
         if (!success)
         {
@@ -44,14 +43,14 @@ public partial class FormList : ComponentBase
         }
 
         _selectedForms.Clear();
+        await _formDataGrid!.ReloadServerData();
         StateHasChanged();
-        _formDataGrid!.ReloadServerData();
         Snackbar!.Add("Forms successfully deleted", Severity.Success);
     }
 
     private void NavigateToForm(DataGridRowClickEventArgs<Data.Form> args)
     {
-        _selectedForms!.Clear();
+        _selectedForms.Clear();
         NavigationManager!.NavigateTo($"/form/edit/{args.Item.Id}");
     }
 }
