@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Components;
-using XForms.Services;
 using XForms.Services.Implementation;
 
-namespace XForms.Components.Form;
+namespace XForms.Components.Template;
 
-public partial class ViewForm : ComponentBase
+public partial class ViewTemplate : ComponentBase
 {
     [Parameter] public int Id { get; set; }
     

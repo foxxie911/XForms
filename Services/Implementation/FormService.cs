@@ -74,6 +74,7 @@ public class FormService(IDbContextFactory<ApplicationDbContext> contextFactory)
         try
         {
             form!.IsSubmitted = true;
+            context.Update(form);
             await context.SaveChangesAsync();
             return true;
         }

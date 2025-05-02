@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.JSInterop;
 using MudBlazor;
@@ -12,6 +13,14 @@ namespace XForms.Components.Admin;
 
 public partial class ManageUser : ComponentBase
 {
+    // Dependency Injection
+    [Inject] private AuthenticationStateProvider? AuthenticationStateProvider { get; set; }
+    [Inject] private UserManager<ApplicationUser>? UserManager { get; set; }
+    [Inject] private NavigationManager? NavigationManager { get; set; }
+    [Inject] private IJSRuntime? JsRuntime { get; set; }
+    [Inject] private ISnackbar? Snackbar { get; set; }
+
+    // Class Variables
     private HashSet<AdminUserManageDto> _selectedUsers = [];
     private bool _deleteDialogVisible;
     private bool _blockDialogVisible;
@@ -24,7 +33,7 @@ public partial class ManageUser : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        _authenticationState = await AuthenticationStateProvider!.GetAuthenticationStateAsync();
     }
 
     private async Task<GridData<AdminUserManageDto>> LoadUsersAsync(GridState<AdminUserManageDto> state)
@@ -47,7 +56,7 @@ public partial class ManageUser : ComponentBase
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
-            Snackbar.Add($"{e.Message}", Severity.Error);
+            Snackbar!.Add($"{e.Message}", Severity.Error);
             return new GridData<AdminUserManageDto>()
             {
                 Items = new List<AdminUserManageDto>(),
@@ -62,7 +71,7 @@ public partial class ManageUser : ComponentBase
 
     private async Task<Tuple<List<AdminUserManageDto>, int>> GetUsers(int page, int pageSize, string searchText)
     {
-        var searchData = SearchData(UserManager.Users.AsNoTracking(), page, pageSize, searchText);
+        var searchData = SearchData(UserManager!.Users.AsNoTracking(), page, pageSize, searchText);
         var applicationUsers = string.IsNullOrWhiteSpace(searchText)
             ? UserManager.Users.AsNoTracking().ToPagedList(page + 1, pageSize).OrderBy(u => u.DisplayName).ToList()
             : searchData.Item1;
@@ -78,7 +87,7 @@ public partial class ManageUser : ComponentBase
         var result = new List<AdminUserManageDto>();
         foreach (var applicationUser in applicationUsers)
         {
-            var applicationUserRoles = await UserManager.GetRolesAsync(applicationUser);
+            var applicationUserRoles = await UserManager!.GetRolesAsync(applicationUser);
             result.Add(new AdminUserManageDto
             {
                 Id = applicationUser.Id,
@@ -131,15 +140,15 @@ public partial class ManageUser : ComponentBase
             if (_isCurrentUser)
             {
                 _isCurrentUser = false;
-                await JsRuntime.InvokeVoidAsync("localStorage.clear");
-                await JsRuntime.InvokeVoidAsync("sessionStorage.clear");
-                NavigationManager.NavigateTo("/Admin/LogOut", true);
+                await JsRuntime!.InvokeVoidAsync("localStorage.clear");
+                await JsRuntime!.InvokeVoidAsync("sessionStorage.clear");
+                NavigationManager!.NavigateTo("/Admin/LogOut", true);
             }
         }
         catch (Exception e)
         {
             Console.WriteLine($"Error => {e.Message}");
-            Snackbar.Add($"{e.Message}", Severity.Error);
+            Snackbar!.Add($"{e.Message}", Severity.Error);
         }
     }
 
@@ -147,7 +156,7 @@ public partial class ManageUser : ComponentBase
     {
         try
         {
-            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+            Snackbar!.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
 
             var successCount = 0;
             var failureCount = 0;
@@ -155,7 +164,7 @@ public partial class ManageUser : ComponentBase
 
             foreach (var user in _selectedUsers)
             {
-                var dbUser = await UserManager.FindByIdAsync(user.Id);
+                var dbUser = await UserManager!.FindByIdAsync(user.Id);
                 if (dbUser == null)
                 {
                     unknownUserCount++;
@@ -177,7 +186,7 @@ public partial class ManageUser : ComponentBase
         catch (Exception e)
         {
             Console.WriteLine($"Error deleting users: {e.Message}");
-            Snackbar.Add($"{e.Message}", Severity.Error);
+            Snackbar!.Add($"{e.Message}", Severity.Error);
         }
         finally
         {
@@ -197,14 +206,14 @@ public partial class ManageUser : ComponentBase
     {
         try
         {
-            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+            Snackbar!.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
 
             var successCount = 0;
             var failureCount = 0;
 
             foreach (var user in _selectedUsers)
             {
-                var dbUser = await UserManager.FindByIdAsync(user.Id);
+                var dbUser = await UserManager!.FindByIdAsync(user.Id);
                 if (dbUser == null) Snackbar.Add("User not found", Severity.Error);
                 var result = IsLockedOut(dbUser!)
                     ? await UserManager.SetLockoutEndDateAsync(dbUser!, DateTimeOffset.MinValue)
@@ -221,7 +230,7 @@ public partial class ManageUser : ComponentBase
         catch (Exception e)
         {
             Console.WriteLine($"Error changing block status: {e.Message}");
-            Snackbar.Add($"{e.Message}", Severity.Error);
+            Snackbar!.Add($"{e.Message}", Severity.Error);
         }
         finally
         {
@@ -234,7 +243,7 @@ public partial class ManageUser : ComponentBase
 
     private async Task ChangeAdminRights()
     {
-        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        Snackbar!.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
         try
         {
             var successCount = 0;
@@ -242,7 +251,7 @@ public partial class ManageUser : ComponentBase
 
             foreach (var user in _selectedUsers)
             {
-                var dbUser = await UserManager.FindByIdAsync(user.Id);
+                var dbUser = await UserManager!.FindByIdAsync(user.Id);
                 if (dbUser == null) Snackbar.Add("User not fount", Severity.Error);
                 var result = await UserManager.IsInRoleAsync(dbUser!, "Admin")
                     ? await UserManager.RemoveFromRoleAsync(dbUser!, "Admin")

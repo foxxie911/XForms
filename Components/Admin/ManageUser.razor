@@ -1,17 +1,11 @@
-@page "/Admin/ManageUser"
+@page "/admin/manage/user"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Identity
 @using XForms.Data
 @using XForms.Data.Dtos
-
-@inject AuthenticationStateProvider AuthenticationStateProvider
-@inject UserManager<ApplicationUser> UserManager
-@inject SignInManager<ApplicationUser> SignInManager
-@inject NavigationManager NavigationManager
-@inject IJSRuntime JsRuntime
-@inject ISnackbar Snackbar
-
 @attribute [Authorize(Roles = "Admin")]
+
+<PageTitle>User Management</PageTitle>
 
 <MudDataGrid
    T="AdminUserManageDto"

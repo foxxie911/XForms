@@ -40,6 +40,6 @@ public partial class FormCard : ComponentBase
 
     private void ViewForm()
     {
-        NavigationManager!.NavigateTo("form/view/" + ChosenTemplate.Id);
+        NavigationManager!.NavigateTo($"/template/view/{ChosenTemplate.Id}");
     }
 }

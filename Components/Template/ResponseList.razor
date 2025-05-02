@@ -16,7 +16,7 @@ else
             <MudText Typo="Typo.h5">Responses</MudText>
         </ToolBarContent>
         <Columns>
-            <PropertyColumn Property="a => a.Form.Creator!.UserName" Title="Submitter"/>
+            <PropertyColumn Property="a => a.Form.Creator!.DisplayName" Title="Submitter"/>
             <TemplateColumn Title="Answer" >
                 <CellTemplate>
                     @if (context.Item.Question.Type == QuestionType.Singleline)

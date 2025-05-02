@@ -9,7 +9,7 @@ public interface ITemplateService
     Task UpdateTemplateAsync(Template? template);
     Task<Template> GetTemplateIncludingQuestionAsync(int id);
     Task<Template> GetTemplateAsync(int id);
-    IEnumerable<Template> GetAllTemplates();
+    Task<List<Template>> GetAllTemplates();
     Task<List<Template>> GetTemplatesByUserId(string userId);
     Task DeleteTemplate(Template? template);
     Task<bool> DeleteTemplatesAsync(IEnumerable<Template> templates);

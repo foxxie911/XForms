@@ -87,14 +87,14 @@ public class TemplateService(IDbContextFactory<ApplicationDbContext> contextFact
         return null!;
     }
 
-    public IEnumerable<Template> GetAllTemplates()
+    public async Task<List<Template>> GetAllTemplates()
     {
-        using var context = contextFactory.CreateDbContext();
+        await using var context = await contextFactory.CreateDbContextAsync();
         try
         {
             var templates = context.Templates
                 .Include(u => u.Creator)
-                .AsEnumerable();
+                .ToList();
             return templates;
         }
         catch (Exception e)
@@ -169,6 +169,7 @@ public class TemplateService(IDbContextFactory<ApplicationDbContext> contextFact
         try
         {
             template.IsPublic = true;
+            context.Update(template);
             await context.SaveChangesAsync();
             return true;
         }

@@ -47,7 +47,7 @@ public class AnswerService(IDbContextFactory<ApplicationDbContext> contextFactor
         return false;
     }
 
-    public async Task<List<Answer>> GetAnswersByQuestions(IEnumerable<int> questionIds)
+    public async Task<List<Answer>> GetSubmittedAnswersByQuestions(IEnumerable<int> questionIds)
     {
         await using var context = await contextFactory.CreateDbContextAsync();
         try
@@ -55,7 +55,9 @@ public class AnswerService(IDbContextFactory<ApplicationDbContext> contextFactor
             var answers = await context.Answers
                 .Where(a => questionIds.Contains(a.QuestionId))
                 .Include(a => a.Question)
-                .Include(a => a.Form.Creator)
+                .Include(a => a.Form)
+                .ThenInclude(f => f.Creator)
+                .Where(a => a.Form.IsSubmitted == true)
                 .AsNoTracking()
                 .ToListAsync();
             return answers;

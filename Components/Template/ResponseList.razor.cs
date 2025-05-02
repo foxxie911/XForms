@@ -28,7 +28,7 @@ public partial class ResponseList : ComponentBase
 
         _questions = await QuestionService!.GetQuestionsByTemplateIdAsync(TemplateId);
         _answers = (await AnswerService!
-            .GetAnswersByQuestions(_questions.Select(q => q.Id)))
+            .GetSubmittedAnswersByQuestions(_questions.Select(q => q.Id)))
             .OrderBy(a => a.Question.Order);
     }
 }

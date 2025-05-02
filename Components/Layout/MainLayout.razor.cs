@@ -44,7 +44,7 @@ public partial class MainLayout : LayoutComponentBase
         var user = _authState!.User;
         if (user.Identity!.IsAuthenticated == false)
         {
-            NavigationManager!.NavigateTo($"/form/view/{template.Id}");
+            NavigationManager!.NavigateTo($"/template/view/{template.Id}");
             return;
         }
 

@@ -1,7 +1,9 @@
-@page "/Admin/ManageTemplate/"
+@page "/admin/manage/template/"
 @using Microsoft.AspNetCore.Authorization
 @using XForms.Data
 @attribute [Authorize(Roles="Admin")]
+
+<PageTitle>Template Management</PageTitle>
 
 @if (!_templates!.Any())
 {

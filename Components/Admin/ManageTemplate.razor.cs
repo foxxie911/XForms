@@ -17,10 +17,10 @@ public partial class ManageTemplate : ComponentBase
     private IEnumerable<Data.Template>? _templates;
     private MudDataGrid<Data.Template>? _templateDataGrid;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
-        _templates = TemplateService!.GetAllTemplates();
+        await base.OnInitializedAsync();
+        _templates = await TemplateService!.GetAllTemplates();
     }
     
     private async Task DeleteSelectedTemplates()
