@@ -43,8 +43,8 @@ public partial class FormList : ComponentBase
         }
 
         _selectedForms.Clear();
+        _forms = await FormService!.FindFormsByUserId(UserId);
         await _formDataGrid!.ReloadServerData();
-        StateHasChanged();
         Snackbar!.Add("Forms successfully deleted", Severity.Success);
     }
 

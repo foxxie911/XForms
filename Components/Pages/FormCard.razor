@@ -1,7 +1,7 @@
 <MudCard Style="min-width: 300px; max-width: 300px">
     @if (ChosenTemplate.ImageUrl is null)
     {
-        <MudCardMedia Image="default_bg.jpg" Height="200"/>
+        <MudPaper Height="200px" Class="blue-gray lighten-4"/>
     }
     else
     {
@@ -23,7 +23,7 @@
                            Color="Color.Primary"
                            StartIcon="@Icons.Material.Filled.Edit"
                            OnClick="() => CreateForm(ChosenTemplate)">
-                    Fill Form
+                    Fill
                 </MudButton>
             </Authorized>
         </AuthorizeView>

@@ -17,12 +17,7 @@ else
         @*Cover photo configuration start*@
         @if (_template.ImageUrl is null)
         {
-            <MudImage Src="default_cover.jpg"
-                      Width="912"
-                      Height="250"
-                      ObjectFit="ObjectFit.Contain"
-                      Fluid="true"
-                      Class="rounded-lg pt-2"/>
+            <MudPaper Height="100px" Class="blue-gray lighten-4 rounded-lg mt-2"/>
         }
         else
         {

@@ -43,8 +43,15 @@ public partial class TemplateList : ComponentBase
         }
 
         _selectedTemplates.Clear();
+        _templates = await TemplateService!.GetTemplatesByUserId(UserId);
         await _templateDataGrid!.ReloadServerData();
         Snackbar!.Add("Templates successfully deleted", Severity.Success);
+    }
+    
+    private async Task NewTemplate()
+    {
+        var templateId = await TemplateService!.CreateTemplateAsync(UserId);
+        NavigationManager!.NavigateTo($"/template/edit/{templateId}");
     }
 
     private void NavigateToTemplate(DataGridRowClickEventArgs<Data.Template> args)

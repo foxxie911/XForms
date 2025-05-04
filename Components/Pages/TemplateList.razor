@@ -3,6 +3,14 @@
 @if (_templates.Count == 0)
 {
     <MudText Align="Align.Center" GutterBottom="true">You have no templates yet</MudText>
+    <div class="d-flex justify-center">
+        <MudButton
+            Variant="Variant.Outlined"
+            OnClick="NewTemplate"
+            Color="Color.Primary">
+            Create
+        </MudButton>
+    </div>
 }
 else
 {
@@ -21,6 +29,13 @@ else
             <MudText Typo="Typo.h5">Templates</MudText>
             <MudSpacer/>
             <MudButtonGroup OverrideStyles="false">
+                <MudButton
+                    StartIcon="@Icons.Material.Filled.Add"
+                    Variant="Variant.Outlined"
+                    OnClick="NewTemplate"
+                    Color="Color.Primary">
+                    Create
+                </MudButton>
                 <MudButton
                     StartIcon="@Icons.Material.Filled.Delete"
                     Variant="Variant.Outlined"
