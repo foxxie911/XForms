@@ -1,7 +1,5 @@
 @page "/admin/manage/user"
 @using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Identity
-@using XForms.Data
 @using XForms.Data.Dtos
 @attribute [Authorize(Roles = "Admin")]
 
@@ -32,7 +30,7 @@
          IconSize="Size.Medium"
          Class="mt-1"/>
       <MudSpacer/>
-      <MudButtonGroup Variant="Variant.Outlined" Color="Color.Primary" OverrideStyles="false">
+      <MudButtonGroup Variant="Variant.Outlined" Color="Color.Primary" OverrideStyles="false" Class="my-2">
          <MudTooltip Text="Delete">
             <MudIconButton
                Icon="@Icons.Material.Filled.Delete"
@@ -56,9 +54,6 @@
             OnClick="@ToggleAdminRightsDialog">
             Change Admin Rights
          </MudButton>
-         <MudButton>
-
-         </MudButton>
       </MudButtonGroup>
    </ToolBarContent>
    <Columns>
@@ -78,16 +73,15 @@
             }
          </CellTemplate>
       </TemplateColumn>
-      <TemplateColumn Title="Block Status">
+      <TemplateColumn Title="Block Status" CellStyleFunc="@CellStyleFunc">
          <CellTemplate>
             @if (context.Item.IsBlocked)
             {
-               <MudChip Color="Color.Error" Size="Size.Small" Icon="@Icons.Material.Filled.Lock">Blocked</MudChip>
+               <MudText Color="Color.Inherit">Blocked</MudText>
             }
             else
             {
-               <MudChip Color="Color.Success" Size="Size.Small" Icon="@Icons.Material.Filled.LockOpen">Not Blocked
-               </MudChip>
+               <MudText Color="Color.Inherit">Not Blocked</MudText>
             }
          </CellTemplate>
       </TemplateColumn>

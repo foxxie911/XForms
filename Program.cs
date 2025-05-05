@@ -63,6 +63,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<LikeService>();
     builder.Services.AddScoped<ITagService, TagService>();
     builder.Services.AddScoped<TagService>();
+    builder.Services.AddScoped<IUserService, UserService>();
 
     builder.Services.AddIdentityCore<ApplicationUser>(options => { options.SignIn.RequireConfirmedAccount = false; })
         .AddRoles<IdentityRole>()

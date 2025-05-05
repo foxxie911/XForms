@@ -36,6 +36,22 @@ public partial class ManageUser : ComponentBase
         _authenticationState = await AuthenticationStateProvider!.GetAuthenticationStateAsync();
     }
 
+    private static Func<AdminUserManageDto, string> CellStyleFunc => arg =>
+    {
+        var style = string.Empty;
+        if (arg.IsBlocked)
+        {
+            style += "background-color: #D32F2F";
+        }
+
+        if (!arg.IsBlocked)
+        {
+            style += "background-color: #388E3C";
+        }
+
+        return style;
+    };
+
     private async Task<GridData<AdminUserManageDto>> LoadUsersAsync(GridState<AdminUserManageDto> state)
     {
         try
