@@ -40,7 +40,7 @@ else
         <Columns>
             <SelectColumn T="Template"/>
             <PropertyColumn Property="t => t.Title"/>
-            <PropertyColumn Property="t => t.Creator.DisplayName" Title="Creator"/>
+            <PropertyColumn Property="t => t.Creator!.DisplayName" Title="Creator"/>
             <PropertyColumn Property="t => t.IsPublic" Title="Published"/>
             <PropertyColumn Property="t => t.CreatedAt" Title="Created At"/>
             <PropertyColumn Property="t => t.UpdatedAt" Title="Updated At"/>

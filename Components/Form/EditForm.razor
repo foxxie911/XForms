@@ -64,13 +64,13 @@ else
             <MudMarkdown Value="@_form.Template.Description"/>
         </MudPaper>
 
-        @if (!_form.Template.Questions.Any())
+        @if (!_form.Template.Questions!.Any())
         {
             <MudText Typo="Typo.h4" Align="Align.Center" Class="mt-4">No Questions</MudText>
         }
         else
         {
-            @foreach (var question in _form.Template.Questions.OrderBy(q => q.Order))
+            @foreach (var question in _form.Template.Questions!.OrderBy(q => q.Order))
             {
                 <AnswerBody Question="question" FormId="@_form.Id" IsSubmitted="@_form.IsSubmitted"/>
             }

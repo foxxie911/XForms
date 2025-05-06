@@ -128,7 +128,6 @@ public partial class EditTemplate : ComponentBase
     private async Task ReplaceCoverPhoto(IBrowserFile? coverImageFile)
     {
         await RemoveCoverPhoto();
-        await Task.Delay(200);
         await UploadCoverPhoto(coverImageFile);
     }
     // Photo Section End
