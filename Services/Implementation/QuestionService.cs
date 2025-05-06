@@ -27,7 +27,7 @@ public class QuestionService(IDbContextFactory<ApplicationDbContext> contextFact
 
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine($@"{e.Message}");
         }
 
         return false;
@@ -44,7 +44,7 @@ public class QuestionService(IDbContextFactory<ApplicationDbContext> contextFact
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine($@"{e.Message}");
         }
 
         return false;
@@ -61,7 +61,7 @@ public class QuestionService(IDbContextFactory<ApplicationDbContext> contextFact
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine($@"{e.Message}");
         }
 
         return false;
@@ -80,7 +80,7 @@ public class QuestionService(IDbContextFactory<ApplicationDbContext> contextFact
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine($@"{e.Message}");
         }
 
         return false;
@@ -98,7 +98,7 @@ public class QuestionService(IDbContextFactory<ApplicationDbContext> contextFact
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine($@"{e.Message}");
         }
 
         return [];

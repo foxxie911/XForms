@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using XForms.Services.Implementation;
+using XForms.Services.Interface;
 
 namespace XForms.Components.Pages;
 
@@ -10,7 +10,7 @@ public partial class TemplateList : ComponentBase
     [Parameter] public required string UserId { get; set; }
 
     // Dependency Injection
-    [Inject] private TemplateService? TemplateService { get; set; }
+    [Inject] private ITemplateService? TemplateService { get; set; }
     [Inject] private ISnackbar? Snackbar { get; set; }
     [Inject] private NavigationManager? NavigationManager { get; set; }
 

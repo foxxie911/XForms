@@ -9,6 +9,7 @@ public class Question
     [Key]
     public int Id { get; set; }
     [Required]
+    [MaxLength(250)]
     public required string Title { get; set; }
     [DataType(DataType.MultilineText)]
     public string? Description { get; set; }
@@ -25,5 +26,5 @@ public class Question
     
     // Navigation
     [Key, ForeignKey("TemplateId")]
-    public Template Template { get; set; }
+    public Template? Template { get; set; }
 }

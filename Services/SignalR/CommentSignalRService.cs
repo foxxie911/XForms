@@ -39,7 +39,7 @@ public class CommentSignalRService : IAsyncDisposable
 
     public async Task StartAsync()
     {
-        if (_connection.State == HubConnectionState.Disconnected)
+        if (_connection!.State == HubConnectionState.Disconnected)
         {
             await _connection.StartAsync();
         }

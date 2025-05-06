@@ -32,7 +32,7 @@ public class LikeService(IDbContextFactory<ApplicationDbContext> contextFactory)
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine($@"{e.Message}");
         }
     }
 
@@ -49,7 +49,7 @@ public class LikeService(IDbContextFactory<ApplicationDbContext> contextFactory)
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine($@"{e.Message}");
         }
 
         return -1;
@@ -68,7 +68,7 @@ public class LikeService(IDbContextFactory<ApplicationDbContext> contextFactory)
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine($@"{e.Message}");
         }
 
         return false;

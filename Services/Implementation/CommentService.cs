@@ -19,7 +19,7 @@ public class CommentService(IDbContextFactory<ApplicationDbContext> contextFacto
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine($@"{e.Message}");
         }
 
         return [];
@@ -39,7 +39,7 @@ public class CommentService(IDbContextFactory<ApplicationDbContext> contextFacto
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine($@"{e.Message}");
         }
         
         return null!;
@@ -55,7 +55,7 @@ public class CommentService(IDbContextFactory<ApplicationDbContext> contextFacto
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine($@"{e.Message}");
         }
 
         return false;

@@ -1,10 +1,8 @@
 ﻿@page "/auth"
 
-@using CloudinaryDotNet.Actions
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Identity
 @using XForms.Data
-@using Size = MudBlazor.Size
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject UserManager<ApplicationUser> UserManager
@@ -52,6 +50,6 @@
             _avatarUrl = user.AvatarUrl;
         }
 
-        _userRoles = (await UserManager.GetRolesAsync(user)).ToList();
+        _userRoles = (await UserManager.GetRolesAsync(user!)).ToList();
     }
 }

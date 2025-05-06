@@ -11,32 +11,32 @@ else
                  @ref="_answerDataGrid"
                  Breakpoint="Breakpoint.Sm"
                  Hover="true"
+                 Groupable="true"
                  Striped="true">
         <ToolBarContent>
             <MudText Typo="Typo.h5">Responses</MudText>
         </ToolBarContent>
         <Columns>
-            <PropertyColumn Property="a => a.Form.Creator!.DisplayName" Title="Submitter"/>
+            <PropertyColumn Property="a => a.Form!.Creator!.DisplayName" Title="Submitter"/>
             <TemplateColumn Title="Answer" >
                 <CellTemplate>
-                    @if (context.Item.Question.Type == QuestionType.Singleline)
+                    @if (context.Item.Question!.Type == QuestionType.Singleline)
                     {
                         <MudText>@context.Item.SingleLine</MudText>
                     }
-                    @if (context.Item.Question.Type == QuestionType.Paragraph)
+                    @if (context.Item.Question!.Type == QuestionType.Paragraph)
                     {
-                        <MudText>@context.Item.Paragraph</MudText>
+                        <MudText>@context.Item!.Paragraph</MudText>
                     }
                     @if (context.Item.Question.Type == QuestionType.Number)
                     {
-                        <MudText>@context.Item.Number</MudText>
+                        <MudText>@context.Item!.Number</MudText>
                     }
                 </CellTemplate>
             </TemplateColumn>
-            <PropertyColumn Property="a => a.Question.Title" 
+            <PropertyColumn Property="a => a.Question!.Title" 
                             Title="Question" 
                             Grouping="true" 
-                            Groupable="true" 
                             Hidden="true"/>
         </Columns>
     </MudDataGrid>

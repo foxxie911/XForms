@@ -8,10 +8,12 @@ public class Comment
     [Key]
     public int Id { get; set; }
     [Required]
+    [MaxLength(50)]
     public required string CreatorId { get; set; }
     [Required]
     public required int TemplateId { get; set; }
     [Required]
+    [MaxLength(250)]
     public required string Message { get; set; }
     [DataType(DataType.DateTime)] 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

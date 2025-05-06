@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using XForms.Data;
-using XForms.Services;
-using XForms.Services.Implementation;
+using XForms.Services.Interface;
 
 namespace XForms.Components.Template;
 
@@ -12,8 +11,8 @@ public partial class ResponseList : ComponentBase
     [Parameter] public required int TemplateId { get; set; }
 
     // Dependency Injection
-    [Inject] private QuestionService? QuestionService { get; set; }
-    [Inject] private AnswerService? AnswerService { get; set; }
+    [Inject] private IQuestionService? QuestionService { get; set; }
+    [Inject] private IAnswerService? AnswerService { get; set; }
     [Inject] private ISnackbar? Snackbar { get; set; }
     [Inject] private NavigationManager? NavigationManager { get; set; }
 
@@ -28,7 +27,7 @@ public partial class ResponseList : ComponentBase
 
         _questions = await QuestionService!.GetQuestionsByTemplateIdAsync(TemplateId);
         _answers = (await AnswerService!
-            .GetSubmittedAnswersByQuestions(_questions.Select(q => q.Id)))
+            .GetSubmittedAnswersByQuestionIds(_questions.Select(q => q.Id)))
             .OrderBy(a => a.Question.Order);
     }
 }

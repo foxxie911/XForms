@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using XForms.Data;
-using XForms.Services;
-using XForms.Services.Implementation;
+using XForms.Services.Interface;
 
 namespace XForms.Components.Form;
 
@@ -14,21 +13,16 @@ public partial class AnswerBody : ComponentBase
     [Parameter] public bool IsSubmitted { get; set; }
 
     // Dependency Injection
-    [Inject] public AnswerService? AnswerService { get; set; }
+    [Inject] public IAnswerService? AnswerService { get; set; }
     [Inject] public ISnackbar? Snackbar { get; set; }
 
     // Class Variable
     private Answer? _answer;
 
-    protected override Task OnInitializedAsync()
-    {
-        return base.OnInitializedAsync();
-    }
-
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
-        _answer = await AnswerService!.CreateOrShowAnswer(Question!.Id, FormId);
+        _answer = await AnswerService!.CreateOrShowAnswer(Question.Id, FormId);
         if (_answer is null) Snackbar!.Add($"Answer creation failed for Question: {Question.Title}", Severity.Error);
     }
 

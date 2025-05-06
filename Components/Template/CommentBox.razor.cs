@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Identity;
 using MudBlazor;
 using XForms.Data;
-using XForms.Services.SignalR;
 
 namespace XForms.Components.Template;
 
@@ -16,7 +15,6 @@ public partial class CommentBox : ComponentBase
     // Dependency Injection
     [Inject] private AuthenticationStateProvider? AuthenticationStateProvider { get; set; }
     [Inject] private UserManager<ApplicationUser>? UserManager { get; set; }
-    [Inject] private CommentSignalRService? SignalRService { get; set; }
     [Inject] private ISnackbar? Snackbar { get; set; }
 
     // Class Variable

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Identity;
 using MudBlazor;
 using XForms.Data;
-using XForms.Services.Implementation;
+using XForms.Services.Interface;
 
 namespace XForms.Components.Template;
 
@@ -16,10 +16,10 @@ public partial class EditTemplate : ComponentBase
     [Parameter] public int Id { get; set; }
 
     // Dependency Injection
-    [Inject] private TemplateService? TemplateService { get; set; }
+    [Inject] private ITemplateService? TemplateService { get; set; }
     [Inject] private AuthenticationStateProvider? AuthenticationStateProvider { get; set; }
     [Inject] private UserManager<ApplicationUser>? UserManager { get; set; }
-    [Inject] private LikeService? LikeService { get; set; }
+    [Inject] private ILikeService? LikeService { get; set; }
     [Inject] private Cloudinary? Cloudinary { get; set; }
     [Inject] private ISnackbar? Snackbar { get; set; }
 
@@ -45,10 +45,11 @@ public partial class EditTemplate : ComponentBase
     }
 
     // Template Section Start
-    private void UpdateTemplate()
+    private async Task UpdateTemplate()
     {
-        _ = TemplateService!.UpdateTemplateAsync(_template);
-        Snackbar!.Add("Template Updated", Severity.Info);
+        var succeed = await TemplateService!.UpdateTemplateAsync(_template!);
+        if (succeed)
+            Snackbar!.Add("Template Updated", Severity.Info);
     }
 
     private async Task PublishTemplatePublic()
@@ -94,13 +95,14 @@ public partial class EditTemplate : ComponentBase
             };
             var uploadResult = await Cloudinary!.UploadAsync(uploadParams);
             _template!.ImageUrl = uploadResult.SecureUrl.ToString();
-            Snackbar!.Add("Avatar uploaded successfully!", Severity.Success);
-            Console.WriteLine(_template!.ImageUrl);
+            var succeed = await TemplateService!.UpdateTemplateAsync(_template);
+            if (succeed)
+                Snackbar!.Add("Avatar uploaded successfully!", Severity.Success);
         }
         catch (Exception e)
         {
             Snackbar!.Add("Upload failed!", Severity.Error);
-            Snackbar!.Add($"{e.Message}", Severity.Error);
+            Console.WriteLine(e.Message);
         }
         finally
         {
@@ -115,12 +117,18 @@ public partial class EditTemplate : ComponentBase
         if (result.Error is not null)
             Snackbar!.Add($"{result.Error.Message}", Severity.Error);
         _template!.ImageUrl = null!;
-        StateHasChanged();
+        var succeed = await TemplateService!.UpdateTemplateAsync(_template!);
+        if (succeed)
+        {
+            Snackbar!.Add("Cover photo successfully removed", Severity.Success);
+            StateHasChanged();
+        }
     }
 
     private async Task ReplaceCoverPhoto(IBrowserFile? coverImageFile)
     {
         await RemoveCoverPhoto();
+        await Task.Delay(200);
         await UploadCoverPhoto(coverImageFile);
     }
     // Photo Section End

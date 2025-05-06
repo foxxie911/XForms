@@ -10,7 +10,8 @@ public class Form
     [Required]
     public int TemplateId { get; set; }
     [Required]
-    public string CreatorId { get; set; }
+    [MaxLength(50)]
+    public required string CreatorId { get; set; }
     public bool IsSubmitted { get; set; }
     [DataType(DataType.DateTime)] 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

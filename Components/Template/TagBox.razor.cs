@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
-using XForms.Services;
-using XForms.Services.Implementation;
+using XForms.Services.Interface;
 
 namespace XForms.Components.Template;
 
@@ -12,8 +11,8 @@ public partial class TagBox : ComponentBase
     [Parameter] public int TemplateId { get; set; }
 
     // Dependency Injection
-    [Inject] private TagService? TagService { get; set; }
-    [Inject] private SearchService? SearchService { get; set; }
+    [Inject] private ITagService? TagService { get; set; }
+    [Inject] private ISearchService? SearchService { get; set; }
     [Inject] private ISnackbar? Snackbar { get; set; }
 
     // Class Variable

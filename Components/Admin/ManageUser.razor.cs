@@ -163,7 +163,7 @@ public partial class ManageUser : ComponentBase
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Error => {e.Message}");
+            Console.WriteLine($@"Error => {e.Message}");
             Snackbar!.Add($"{e.Message}", Severity.Error);
         }
     }
@@ -201,7 +201,7 @@ public partial class ManageUser : ComponentBase
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Error deleting users: {e.Message}");
+            Console.WriteLine($@"Error deleting users: {e.Message}");
             Snackbar!.Add($"{e.Message}", Severity.Error);
         }
         finally
@@ -245,7 +245,7 @@ public partial class ManageUser : ComponentBase
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Error changing block status: {e.Message}");
+            Console.WriteLine($@"Error changing block status: {e.Message}");
             Snackbar!.Add($"{e.Message}", Severity.Error);
         }
         finally
@@ -281,7 +281,7 @@ public partial class ManageUser : ComponentBase
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Error: {e.Message}");
+            Console.WriteLine($@"Error: {e.Message}");
             Snackbar.Add(e.Message, Severity.Error);
         }
         finally

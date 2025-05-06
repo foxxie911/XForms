@@ -6,7 +6,7 @@ namespace XForms.Services.Interface;
 public interface ITemplateService
 {
     Task<int> CreateTemplateAsync(string? userId);
-    Task UpdateTemplateAsync(Template? template);
+    Task<bool> UpdateTemplateAsync(Template template);
     Task<Template> GetTemplateIncludingQuestionAsync(int id);
     Task<Template> GetTemplateAsync(int id);
     Task<List<Template>> GetAllTemplates();

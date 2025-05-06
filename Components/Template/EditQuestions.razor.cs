@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using XForms.Data;
-using XForms.Services.Implementation;
+using XForms.Services.Interface;
 
 namespace XForms.Components.Template;
 
@@ -12,7 +12,7 @@ public partial class EditQuestions : ComponentBase
 
     // Dependency Injection
     [Inject] private ISnackbar? Snackbar { get; set; }
-    [Inject] private QuestionService? QuestionService { get; set; }
+    [Inject] private IQuestionService? QuestionService { get; set; }
 
     // Class variables
     private MudDropContainer<Question>? _dragDropContainer;

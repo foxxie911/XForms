@@ -24,7 +24,7 @@ public class AnswerService(IDbContextFactory<ApplicationDbContext> contextFactor
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine($@"{e.Message}");
         }
 
         return null!;
@@ -41,13 +41,13 @@ public class AnswerService(IDbContextFactory<ApplicationDbContext> contextFactor
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine($@"{e.Message}");
         }
 
         return false;
     }
 
-    public async Task<List<Answer>> GetSubmittedAnswersByQuestions(IEnumerable<int> questionIds)
+    public async Task<List<Answer>> GetSubmittedAnswersByQuestionIds(IEnumerable<int> questionIds)
     {
         await using var context = await contextFactory.CreateDbContextAsync();
         try
@@ -56,8 +56,8 @@ public class AnswerService(IDbContextFactory<ApplicationDbContext> contextFactor
                 .Where(a => questionIds.Contains(a.QuestionId))
                 .Include(a => a.Question)
                 .Include(a => a.Form)
-                .ThenInclude(f => f.Creator)
-                .Where(a => a.Form.IsSubmitted == true)
+                .ThenInclude(f => f!.Creator)
+                .Where(a => a.Form!.IsSubmitted == true)
                 .AsNoTracking()
                 .ToListAsync();
             return answers;

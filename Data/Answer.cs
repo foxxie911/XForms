@@ -23,7 +23,7 @@ public class Answer
     
     // Navigation
     [ForeignKey("FormId")]
-    public virtual Form Form { get; set; }
+    public virtual Form? Form { get; set; }
     [ForeignKey("QuestionId")]
-    public virtual Question Question { get; set; }
+    public virtual Question? Question { get; set; }
 }

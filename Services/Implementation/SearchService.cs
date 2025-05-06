@@ -16,7 +16,7 @@ public class SearchService(IDbContextFactory<ApplicationDbContext> contextFactor
         var templates = await context.Templates
             .Where(t => EF.Functions.ILike(t.Title, $"%{searchString}%") && t.IsPublic == true)
             .Include(t => t.Likes)
-            .OrderByDescending(t => t.Likes.Count)
+            .OrderByDescending(t => t.Likes!.Count)
             .Take(maxResult)
             .ToListAsync();
 

@@ -3,7 +3,7 @@ using XForms.Data;
 
 namespace XForms.Seeder;
 
-public class UserSeeder
+public static class UserSeeder
 {
    public static async Task SeedUserAsync(IServiceProvider serviceProvider)
    {

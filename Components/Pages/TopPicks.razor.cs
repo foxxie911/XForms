@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Components;
-using MudBlazor;
 using XForms.Data;
-using XForms.Services;
-using XForms.Services.Implementation;
+using XForms.Services.Interface;
 
 namespace XForms.Components.Pages;
 
@@ -12,10 +10,7 @@ public partial class TopPicks : ComponentBase
     [Parameter] public required ApplicationUser CurrentUser { get; set; }
 
     // Dependency Injection
-    [Inject] private TemplateService? TemplateService { get; set; }
-    [Inject] private FormService? FormService { get; set; }
-    [Inject] private ISnackbar? Snackbar { get; set; }
-    [Inject] private NavigationManager? NavigationManager { get; set; }
+    [Inject] private ITemplateService? TemplateService { get; set; }
 
     // Class variable
     private List<Data.Template> _templates = [];

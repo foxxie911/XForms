@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using MudBlazor;
 using XForms.Data;
-using XForms.Services.Implementation;
 using XForms.Services.Interface;
 
 namespace XForms.Components.Layout;
@@ -11,13 +10,13 @@ namespace XForms.Components.Layout;
 public partial class MainLayout : LayoutComponentBase
 {
     // Dependency Injection
-    [Inject] private SearchService? SearchService { get; set; }
+    [Inject] private ISearchService? SearchService { get; set; }
     [Inject] private AuthenticationStateProvider? AuthenticationStateProvider { get; set; }
     [Inject] private UserManager<ApplicationUser>? UserManager { get; set; }
     [Inject] private IUserService? UserService { get; set; }
     [Inject] private ISnackbar? Snackbar { get; set; }
     [Inject] private NavigationManager? NavigationManager { get; set; }
-    [Inject] private FormService? FormService { get; set; }
+    [Inject] private IFormService? FormService { get; set; }
 
 
     // Class variables

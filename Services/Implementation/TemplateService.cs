@@ -25,29 +25,27 @@ public class TemplateService(IDbContextFactory<ApplicationDbContext> contextFact
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine(e.Message);
         }
 
         return -1;
     }
 
-    public async Task UpdateTemplateAsync(Template? template)
+    public async Task<bool> UpdateTemplateAsync(Template template)
     {
         await using var context = await contextFactory.CreateDbContextAsync();
-        var dbTemplate = await context.Templates.FirstOrDefaultAsync(t => t.Id == template!.Id);
-        if (dbTemplate is null)
+        try
         {
-            Console.WriteLine("Template not found");
-            return;
+            context.Update(template);
+            await context.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
         }
 
-        if (dbTemplate.Version != template!.Version)
-        {
-            Console.WriteLine($"Database entry updated for this template");
-            return;
-        }
-
-        await context.SaveChangesAsync();
+        return false;
     }
 
     public async Task<Template> GetTemplateIncludingQuestionAsync(int id)
@@ -63,7 +61,7 @@ public class TemplateService(IDbContextFactory<ApplicationDbContext> contextFact
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine(e.Message);
         }
 
         return null!;
@@ -81,7 +79,7 @@ public class TemplateService(IDbContextFactory<ApplicationDbContext> contextFact
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Console.WriteLine(e.Message);
         }
 
         return null!;
@@ -99,7 +97,7 @@ public class TemplateService(IDbContextFactory<ApplicationDbContext> contextFact
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine(e.Message);
         }
 
         return [];
@@ -118,7 +116,7 @@ public class TemplateService(IDbContextFactory<ApplicationDbContext> contextFact
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine(e.Message);
         }
 
         return [];
@@ -128,7 +126,7 @@ public class TemplateService(IDbContextFactory<ApplicationDbContext> contextFact
     {
         if (template is null)
         {
-            Console.WriteLine("Template not found");
+            Console.WriteLine(@"Template not found");
             return;
         }
 
@@ -141,7 +139,7 @@ public class TemplateService(IDbContextFactory<ApplicationDbContext> contextFact
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine(e.Message);
         }
     }
 
@@ -156,7 +154,7 @@ public class TemplateService(IDbContextFactory<ApplicationDbContext> contextFact
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine(e.Message);
         }
 
         return false;
@@ -175,7 +173,7 @@ public class TemplateService(IDbContextFactory<ApplicationDbContext> contextFact
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine(e.Message);
         }
 
         return false;
@@ -189,14 +187,14 @@ public class TemplateService(IDbContextFactory<ApplicationDbContext> contextFact
             var result = await context.Templates
                 .Where(t => t.IsPublic)
                 .Include(t => t.Likes)
-                .OrderByDescending(t => t.Likes.Count)
+                .OrderByDescending(t => t.Likes!.Count)
                 .Take(count)
                 .ToListAsync();
             return result;
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine(e.Message);
         }
 
         return [];

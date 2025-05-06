@@ -1,14 +1,13 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using XForms.Services;
-using XForms.Services.Implementation;
+using XForms.Services.Interface;
 
 namespace XForms.Components.Admin;
 
 public partial class ManageTemplate : ComponentBase
 {
     // Dependency Injection
-    [Inject] private TemplateService? TemplateService { get; set; }
+    [Inject] private ITemplateService? TemplateService { get; set; }
     [Inject] private ISnackbar? Snackbar { get; set; }
     [Inject] private NavigationManager? NavigationManager { get; set; }
     

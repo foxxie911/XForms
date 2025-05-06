@@ -3,8 +3,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using MudBlazor;
 using XForms.Data;
-using XForms.Services;
-using XForms.Services.Implementation;
+using XForms.Services.Interface;
 
 namespace XForms.Components.Form;
 
@@ -14,10 +13,10 @@ public partial class EditForm : ComponentBase
     [Parameter] public required int Id { get; set; }
 
     // Dependency Injection
-    [Inject] private FormService? FormService { get; set; }
+    [Inject] private IFormService? FormService { get; set; }
     [Inject] private AuthenticationStateProvider? AuthenticationStateProvider { get; set; }
     [Inject] private UserManager<ApplicationUser>? UserManager { get; set; }
-    [Inject] private LikeService? LikeService { get; set; }
+    [Inject] private ILikeService? LikeService { get; set; }
     [Inject] private ISnackbar? Snackbar { get; set; }
     [Inject] private NavigationManager? NavigationManager { get; set; }
 

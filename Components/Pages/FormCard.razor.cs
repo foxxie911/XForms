@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using XForms.Data;
-using XForms.Services;
-using XForms.Services.Implementation;
+using XForms.Services.Interface;
 
 namespace XForms.Components.Pages;
 
@@ -13,7 +12,7 @@ public partial class FormCard : ComponentBase
     [Parameter]
     public required ApplicationUser CurrentUser { get; set; }
     
-    [Inject] private FormService? FormService { get; set; }
+    [Inject] private IFormService? FormService { get; set; }
     [Inject] private ISnackbar? Snackbar { get; set; }
     [Inject] private NavigationManager? NavigationManager { get; set; }
     

@@ -24,7 +24,7 @@ public class FormService(IDbContextFactory<ApplicationDbContext> contextFactory)
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine($@"{e.Message}");
         }
 
         return int.MinValue;
@@ -45,7 +45,7 @@ public class FormService(IDbContextFactory<ApplicationDbContext> contextFactory)
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine($@"{e.Message}");
         }
 
         return null!;
@@ -62,7 +62,7 @@ public class FormService(IDbContextFactory<ApplicationDbContext> contextFactory)
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine($@"{e.Message}");
         }
 
         return null!;
@@ -80,7 +80,7 @@ public class FormService(IDbContextFactory<ApplicationDbContext> contextFactory)
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine($@"{e.Message}");
         }
 
         return false;
@@ -99,7 +99,7 @@ public class FormService(IDbContextFactory<ApplicationDbContext> contextFactory)
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine($@"{e.Message}");
         }
 
         return [];
@@ -116,7 +116,7 @@ public class FormService(IDbContextFactory<ApplicationDbContext> contextFactory)
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine($@"{e.Message}");
         }
 
         return false;
@@ -136,7 +136,7 @@ public class FormService(IDbContextFactory<ApplicationDbContext> contextFactory)
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{e.Message}");
+            Console.WriteLine($@"{e.Message}");
         }
 
         return [];
