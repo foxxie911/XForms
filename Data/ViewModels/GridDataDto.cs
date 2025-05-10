@@ -1,4 +1,4 @@
-namespace XForms.Data.Dtos;
+namespace XForms.Data.ViewModels;
 
 public class GridDataDto
 {

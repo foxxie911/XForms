@@ -1,6 +1,6 @@
 @page "/admin/manage/user"
 @using Microsoft.AspNetCore.Authorization
-@using XForms.Data.Dtos
+@using XForms.Data.ViewModels
 @attribute [Authorize(Roles = "Admin")]
 
 <PageTitle>User Management</PageTitle>
@@ -47,13 +47,14 @@
                Size="Size.Medium"
                OnClick="@ToggleBlockDialog"/>
          </MudTooltip>
-         <MudButton
-            Color="Color.Success"
-            Size="Size.Medium"
-            Variant="Variant.Outlined"
-            OnClick="@ToggleAdminRightsDialog">
-            Change Admin Rights
-         </MudButton>
+         <MudTooltip Text="Change admin rights">
+            <MudIconButton
+               Color="Color.Success"
+               Icon="@Icons.Material.Filled.ChangeCircle"
+               Size="Size.Medium"
+               Variant="Variant.Outlined"
+               OnClick="@ToggleAdminRightsDialog"/>
+         </MudTooltip>
       </MudButtonGroup>
    </ToolBarContent>
    <Columns>

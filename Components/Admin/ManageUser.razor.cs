@@ -6,7 +6,7 @@ using Microsoft.JSInterop;
 using MudBlazor;
 using X.PagedList.Extensions;
 using XForms.Data;
-using XForms.Data.Dtos;
+using XForms.Data.ViewModels;
 using Exception = System.Exception;
 
 namespace XForms.Components.Admin;

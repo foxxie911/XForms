@@ -6,7 +6,6 @@
 
 @inject UserManager<ApplicationUser> UserManager
 @inject ISnackbar Snackbar
-@inject ILogger<Register> Logger
 @inject NavigationManager NavigationManager
 
 <MudContainer MaxWidth="MaxWidth.Small" Class="pt-15">
@@ -116,12 +115,11 @@
 
             Snackbar.Configuration.PositionClass = "Bottom-Start";
             Snackbar.Add("Account Created", Severity.Success);
-            Logger.LogInformation("User created a new account with password.");
 
             await Task.Delay(2000);
 
             // await SignInManager.SignInAsync(user, isPersistent: false);
-            NavigationManager.NavigateTo("Account/Login");
+            NavigationManager.NavigateTo("/Account/Login");
 
         }
         catch(Exception e)
