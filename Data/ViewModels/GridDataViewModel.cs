@@ -1,6 +1,6 @@
 namespace XForms.Data.ViewModels;
 
-public class GridDataDto
+public class GridDataViewModel
 {
     public string? SearchText { get; set; }
     public int Page { get; set; }

@@ -1,0 +1,77 @@
+@page "/Form/SalesforceForm"
+@using System.ComponentModel.DataAnnotations
+<PageTitle>Salesforce Form</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Gutters="true">
+    <MudPaper MaxWidth="100%" Outlined="true" Class="pa-8 mt-4 rounded-lg">
+        <MudForm @ref="_salesforceForm" @bind-IsValid="@_isValid">
+            <MudText Class="mb-4" Typo="Typo.h6">Account Information</MudText>
+            <MudGrid>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="_accountContactViewModel.Account!.Name"
+                                  Variant="Variant.Outlined"
+                                  Label="Account Name"
+                                  Required="true"
+                                  RequiredError="Account name is required"/>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="_accountContactViewModel.Account!.Phone"
+                                  Variant="Variant.Outlined"
+                                  Label="Phone"/>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="_accountContactViewModel.Account!.Description"
+                                  Variant="Variant.Outlined"
+                                  Label="Description"
+                                  Lines="3"/>
+                </MudItem>
+            </MudGrid>
+
+            <MudDivider Class="my-6"/>
+
+            <MudText Class="mb-4" Typo="Typo.h6">Contact Information</MudText>
+            <MudGrid>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="_accountContactViewModel.Contact!.FirstName"
+                                  Variant="Variant.Outlined"
+                                  Label="First Name"/>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="_accountContactViewModel.Contact!.LastName"
+                                  Variant="Variant.Outlined"
+                                  Label="Last Name"
+                                  Required="true"
+                                  RequiredError="Last name is required"/>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="_accountContactViewModel.Contact!.Email"
+                                  Variant="Variant.Outlined"
+                                  Label="Email"
+                                  Required="true"
+                                  RequiredError="Email is required"
+                                  Validation="@(new EmailAddressAttribute { ErrorMessage = @"Invalid email address" })"/>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="_accountContactViewModel.Contact!.Phone"
+                                  Variant="Variant.Outlined"
+                                  Label="Phone"/>
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   OnClick="SubmitForm"
+                   Disabled="@(!_isValid || _isSubmitting)"
+                   Class="mt-4">
+            @if (_isSubmitting)
+            {
+                <MudProgressCircular Class="mr-2" Size="Size.Small" Indeterminate="true"/>
+                <span>Submitting...</span>
+            }
+            else
+            {
+                <span>Create Account & Contact</span>
+            }
+        </MudButton>
+    </MudPaper>
+</MudContainer>

@@ -1,6 +1,10 @@
-﻿@implements IDisposable
+﻿@using Microsoft.AspNetCore.Identity
+@using XForms.Data
+@implements IDisposable
 
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<ApplicationUser> UserManager
 
 <MudNavMenu>
     <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
@@ -9,6 +13,12 @@
     </AuthorizeView>
     <AuthorizeView>
         <Authorized>
+            <MudNavLink Href="Form/SalesforceForm"
+                        Disabled="@(CurrentUser!.SalesforceId is not null)"
+                        Match="NavLinkMatch.Prefix"
+                        Icon="@Icons.Material.Filled.Fax">
+                Salesforce Form
+            </MudNavLink>
             <MudNavLink Href="Account/Manage"
                         Match="NavLinkMatch.Prefix"
                         Icon="@Icons.Material.Filled.Person">
@@ -44,9 +54,12 @@
 
 @code {
     private string? _currentUrl;
+    private ApplicationUser? CurrentUser { get; set; }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        CurrentUser = await UserManager.GetUserAsync(authState.User);
         _currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
         NavigationManager.LocationChanged += OnLocationChanged;
     }

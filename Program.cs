@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor;
 using MudBlazor.Services;
@@ -52,6 +53,12 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<ILikeService, LikeService>();
     builder.Services.AddScoped<ITagService, TagService>();
     builder.Services.AddScoped<IUserService, UserService>();
+    
+    // salesforce
+    builder.Services.AddHttpClient<SalesforceAuthService>();
+    builder.Services.AddScoped<ISalesforceAuthService, SalesforceAuthService>();
+    builder.Services.AddHttpClient<SalesforceService>();
+    builder.Services.AddScoped<ISalesforceService, SalesforceService>();
 
     builder.Services.AddIdentityCore<ApplicationUser>(options => { options.SignIn.RequireConfirmedAccount = false; })
         .AddRoles<IdentityRole>()

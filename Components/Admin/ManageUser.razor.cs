@@ -21,14 +21,14 @@ public partial class ManageUser : ComponentBase
     [Inject] private ISnackbar? Snackbar { get; set; }
 
     // Class Variables
-    private HashSet<AdminUserManageDto> _selectedUsers = [];
+    private HashSet<ManageUserViewModel> _selectedUsers = [];
     private bool _deleteDialogVisible;
     private bool _blockDialogVisible;
     private bool _adminRightsDialogVisible;
     private bool _isCurrentUser;
-    private MudDataGrid<AdminUserManageDto>? _dataGrid;
+    private MudDataGrid<ManageUserViewModel>? _dataGrid;
     private AuthenticationState? _authenticationState;
-    private readonly GridDataDto? _gridDataDto = new GridDataDto();
+    private readonly GridDataViewModel? _gridDataDto = new GridDataViewModel();
 
     protected override async Task OnInitializedAsync()
     {
@@ -36,7 +36,7 @@ public partial class ManageUser : ComponentBase
         _authenticationState = await AuthenticationStateProvider!.GetAuthenticationStateAsync();
     }
 
-    private static Func<AdminUserManageDto, string> CellStyleFunc => arg =>
+    private static Func<ManageUserViewModel, string> CellStyleFunc => arg =>
     {
         var style = string.Empty;
         if (arg.IsBlocked)
@@ -52,7 +52,7 @@ public partial class ManageUser : ComponentBase
         return style;
     };
 
-    private async Task<GridData<AdminUserManageDto>> LoadUsersAsync(GridState<AdminUserManageDto> state)
+    private async Task<GridData<ManageUserViewModel>> LoadUsersAsync(GridState<ManageUserViewModel> state)
     {
         try
         {
@@ -63,7 +63,7 @@ public partial class ManageUser : ComponentBase
 
             var pageData = await GetUsers(_gridDataDto.Page, _gridDataDto.PageSize, _gridDataDto.SearchText!);
 
-            return new GridData<AdminUserManageDto>()
+            return new GridData<ManageUserViewModel>()
             {
                 Items = pageData.Item1,
                 TotalItems = pageData.Item2
@@ -73,9 +73,9 @@ public partial class ManageUser : ComponentBase
         {
             Console.WriteLine(e.Message);
             Snackbar!.Add($"{e.Message}", Severity.Error);
-            return new GridData<AdminUserManageDto>()
+            return new GridData<ManageUserViewModel>()
             {
-                Items = new List<AdminUserManageDto>(),
+                Items = new List<ManageUserViewModel>(),
                 TotalItems = 0
             };
         }
@@ -85,7 +85,7 @@ public partial class ManageUser : ComponentBase
         }
     }
 
-    private async Task<Tuple<List<AdminUserManageDto>, int>> GetUsers(int page, int pageSize, string searchText)
+    private async Task<Tuple<List<ManageUserViewModel>, int>> GetUsers(int page, int pageSize, string searchText)
     {
         var searchData = SearchData(UserManager!.Users.AsNoTracking(), page, pageSize, searchText);
         var applicationUsers = string.IsNullOrWhiteSpace(searchText)
@@ -98,13 +98,13 @@ public partial class ManageUser : ComponentBase
         return Tuple.Create(users, applicationUsersCount);
     }
 
-    private async Task<List<AdminUserManageDto>> ModelToDto(List<ApplicationUser> applicationUsers)
+    private async Task<List<ManageUserViewModel>> ModelToDto(List<ApplicationUser> applicationUsers)
     {
-        var result = new List<AdminUserManageDto>();
+        var result = new List<ManageUserViewModel>();
         foreach (var applicationUser in applicationUsers)
         {
             var applicationUserRoles = await UserManager!.GetRolesAsync(applicationUser);
-            result.Add(new AdminUserManageDto
+            result.Add(new ManageUserViewModel
             {
                 Id = applicationUser.Id,
                 DisplayName = applicationUser.DisplayName,
@@ -117,7 +117,7 @@ public partial class ManageUser : ComponentBase
         return result;
     }
 
-    private void OnSelectedItemsChanged(HashSet<AdminUserManageDto> users)
+    private void OnSelectedItemsChanged(HashSet<ManageUserViewModel> users)
     {
         _selectedUsers = users;
         StateHasChanged();

@@ -10,8 +10,11 @@ public class ApplicationUser : IdentityUser
     [Required]
     [MaxLength(100, ErrorMessage = "Your given name cannot be longer than 100 characters.")]
     public required string DisplayName { get; set; }
+    [MaxLength(150)]
     [DataType(DataType.ImageUrl)]
     public string? AvatarUrl { get; set; }
+    [MaxLength(100)]
+    public string? SalesforceId { get; set; }
     public bool IsDarkMode { get; set; }
     
     // Navigation

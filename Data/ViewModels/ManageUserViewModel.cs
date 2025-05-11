@@ -1,6 +1,6 @@
 namespace XForms.Data.ViewModels;
 
-public class AdminUserManageDto
+public class ManageUserViewModel
 {
     public required string Id { get; set; }
     public required string DisplayName { get; set; }

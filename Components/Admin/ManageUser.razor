@@ -6,7 +6,7 @@
 <PageTitle>User Management</PageTitle>
 
 <MudDataGrid
-   T="AdminUserManageDto"
+   T="ManageUserViewModel"
    MultiSelection="true"
    Hover="true"
    Striped="true"
@@ -58,7 +58,7 @@
       </MudButtonGroup>
    </ToolBarContent>
    <Columns>
-      <SelectColumn T="AdminUserManageDto"/>
+      <SelectColumn T="ManageUserViewModel"/>
       <PropertyColumn Sortable="true" Property="u => u.DisplayName"
                       Comparer="new MudBlazor.Utilities.NaturalComparer()"/>
       <PropertyColumn Sortable="true" Property="u => u.Email"/>
@@ -88,7 +88,7 @@
       </TemplateColumn>
    </Columns>
    <PagerContent>
-      <MudDataGridPager T="AdminUserManageDto"/>
+      <MudDataGridPager T="ManageUserViewModel"/>
    </PagerContent>
 </MudDataGrid>
 
