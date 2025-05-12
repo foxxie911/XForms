@@ -15,6 +15,7 @@ public partial class SalesforceForm : ComponentBase
     [Inject] private UserManager<ApplicationUser>? UserManager { get; set; }
     [Inject] private ISalesforceService? SalesforceService { get; set; }
     [Inject] private ISnackbar? Snackbar { get; set; }
+    [Inject] private NavigationManager? NavigationManager { get; set; }
     
     // Class variable
     private ApplicationUser? _currentUser;
@@ -53,6 +54,7 @@ public partial class SalesforceForm : ComponentBase
             finally
             {
                 _isSubmitting = false;
+                NavigationManager!.NavigateTo("/");
             }
         }
     }

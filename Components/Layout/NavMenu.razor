@@ -14,8 +14,8 @@
     <AuthorizeView>
         <Authorized>
             <MudNavLink Href="Form/SalesforceForm"
-                        Disabled="@(CurrentUser!.SalesforceId is not null)"
                         Match="NavLinkMatch.Prefix"
+                        Disabled="@(CurrentUser?.SalesforceId != string.Empty && CurrentUser?.SalesforceId is not null)"
                         Icon="@Icons.Material.Filled.Fax">
                 Salesforce Form
             </MudNavLink>
